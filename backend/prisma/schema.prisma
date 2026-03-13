@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Genre {
+  ACTION
+  DRAMA
+  COMEDY
+  HORROR
+  SCI_FI
+  FANTASY
+  THRILLER
+  ROMANCE
+  MYSTERY
+  ADVENTURE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  bio       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  movies    Movie[]
+  ratings   Rating[]
+}
+
+model Movie {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  genre       Genre
+  runtime     Int?
+  synopsis    String
+
+  posterUrl   String?
+  isPublished Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creatorId   String
+  creator     User     @relation(fields: [creatorId], references: [id])
+
+  scenes      Scene[]
+  characters  Character[]
+  ratings     Rating[]
+}
+
+model Scene {
+  id         String   @id @default(cuid())
+  title      String
+  location   String?
+  scriptText String
+
+  actNumber  Int
+  sceneOrder Int
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  movieId    String
+  movie      Movie    @relation(fields: [movieId], references: [id])
+
+  characters SceneCharacter[]
+}
+
+model Character {
+  id        String   @id @default(cuid())
+  name      String
+  actorName String?
+  avatarUrl String?
+
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id])
+
+  scenes    SceneCharacter[]
+}
+
+model SceneCharacter {
+  sceneId     String
+  characterId String
+
+  scene       Scene     @relation(fields: [sceneId], references: [id])
+  character   Character @relation(fields: [characterId], references: [id])
+
+  @@id([sceneId, characterId])
+}
+
+model Rating {
+  id       String @id @default(cuid())
+  rating   Int
+
+  userId   String
+  movieId  String
+
+  user     User  @relation(fields: [userId], references: [id])
+  movie    Movie @relation(fields: [movieId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, movieId])
+}
+
