@@ -144,3 +144,75 @@ export const getMovieStudio = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Failed to load movie studio data" })
   }
 }
+
+export const getFullMovie = async (req: Request, res: Response) => {
+  try {
+    const slug = req.params.slug as string
+
+    const movie = await prisma.movie.findUnique({
+      where: { slug },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            username: true
+          }
+        },
+        characters: true,
+        scenes: {
+          orderBy: {
+            sceneOrder: "asc"
+          },
+          include: {
+            characters: {
+              include: {
+                character: true
+              }
+            }
+          }
+        },
+        ratings: true
+      }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    if (!movie.isPublished) {
+      return res.status(403).json({ message: "Movie not published yet" })
+    }
+
+    const averageRating =
+      movie.ratings.length > 0
+        ? movie.ratings.reduce((sum, r) => sum + r.rating, 0) /
+          movie.ratings.length
+        : null
+
+    res.json({
+      movie: {
+        id: movie.id,
+        title: movie.title,
+        genre: movie.genre,
+        runtime: movie.runtime,
+        synopsis: movie.synopsis,
+        posterUrl: movie.posterUrl,
+        creator: movie.creator,
+        averageRating
+      },
+      characters: movie.characters,
+      scenes: movie.scenes.map(scene => ({
+        id: scene.id,
+        title: scene.title,
+        location: scene.location,
+        actNumber: scene.actNumber,
+        sceneOrder: scene.sceneOrder,
+        scriptText: scene.scriptText,
+        characters: scene.characters.map(sc => sc.character)
+      }))
+    })
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch movie screenplay" })
+  }
+}
