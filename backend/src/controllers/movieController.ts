@@ -40,7 +40,7 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
     console.error("Create movie error:", error)
     res.status(500).json({
       message: "Error creating movie",
-      
+
     })
   }
 }
@@ -104,7 +104,7 @@ export const publishMovie = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Failed to publish movie" })
   }
-} 
+}
 
 export const getMovieStudio = async (req: AuthRequest, res: Response) => {
   try {
@@ -160,9 +160,10 @@ export const getFullMovie = async (req: Request, res: Response) => {
         },
         characters: true,
         scenes: {
-          orderBy: {
-            sceneOrder: "asc"
-          },
+          orderBy: [
+            { actNumber: "asc" },
+            { sceneOrder: "asc" }
+          ],
           include: {
             characters: {
               include: {
@@ -183,10 +184,16 @@ export const getFullMovie = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Movie not published yet" })
     }
 
+    const acts = {
+      act1: movie.scenes.filter(s => s.actNumber === 1),
+      act2: movie.scenes.filter(s => s.actNumber === 2),
+      act3: movie.scenes.filter(s => s.actNumber === 3)
+    }
+
     const averageRating =
       movie.ratings.length > 0
         ? movie.ratings.reduce((sum, r) => sum + r.rating, 0) /
-          movie.ratings.length
+        movie.ratings.length
         : null
 
     res.json({
