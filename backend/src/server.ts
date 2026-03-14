@@ -8,6 +8,7 @@ import characterRoutes from "./routes/characterRoutes.js";
 import sceneCharacterRoutes from "./routes/sceneCharacterRoutes.js";
 import sceneRoutes from "./routes/sceneRoute.js";
 import ratingRoutes from "./routes/ratingRoutes.js";
+import { apiLimiter } from "./middleware/rateLimiter.js"
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const app: Application = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api", apiLimiter)
 
 app.use("/auth", authRoutes);
 app.use("/movies", movieRoutes);

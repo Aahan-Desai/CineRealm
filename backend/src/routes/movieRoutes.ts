@@ -9,10 +9,10 @@ router.post("/", authenticate, createMovie)
 
 router.get("/", getMovies)
 router.get("/explore", exploreMovies)
-router.get("/my", authenticate, getMyMovies)
 router.get("/search", searchMovies)
-router.get("/:slug", getMovieBySlug)
+router.get("/my", authenticate, getMyMovies)
 router.get("/:slug/full", getFullMovie)
+router.get("/:slug", getMovieBySlug)
 router.get("/:id/studio", authenticate, getMovieStudio)
 
 
