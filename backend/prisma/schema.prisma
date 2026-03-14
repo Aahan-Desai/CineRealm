@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
 enum Genre {
   ACTION
   DRAMA
@@ -39,11 +44,12 @@ model Movie {
   title       String
   slug        String   @unique
   genre       Genre
-  runtime     Int?
+  runtime     Int
   synopsis    String
 
   posterUrl   String?
   isPublished Boolean  @default(false)
+  visibility  Visibility @default(PRIVATE)
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
