@@ -1,6 +1,6 @@
 import express from "express"
 import { authenticate } from "../middleware/authMiddleware.js"
-import { createMovie, getMovies, getMovieBySlug, publishMovie } from "../controllers/movieController.js"
+import { createMovie, getMovies, getMovieBySlug, publishMovie, getMovieStudio  } from "../controllers/movieController.js"
 
 const router = express.Router()
 
@@ -10,5 +10,6 @@ router.patch("/:id/publish", authenticate, publishMovie)
 
 router.get("/", getMovies)
 router.get("/:slug", getMovieBySlug)
+router.get("/:id/studio", authenticate, getMovieStudio)
 
 export default router

@@ -105,3 +105,42 @@ export const publishMovie = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Failed to publish movie" })
   }
 } 
+
+export const getMovieStudio = async (req: AuthRequest, res: Response) => {
+  try {
+    const id = req.params.id as string
+    const userId = req.userId
+
+    const movie = await prisma.movie.findUnique({
+      where: { id },
+      include: {
+        characters: true,
+        scenes: {
+          include: {
+            characters: {
+              include: {
+                character: true
+              }
+            }
+          },
+          orderBy: {
+            sceneOrder: "asc"
+          }
+        }
+      }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    if (movie.creatorId !== userId) {
+      return res.status(403).json({ message: "Not authorized" })
+    }
+
+    res.json(movie)
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to load movie studio data" })
+  }
+}
