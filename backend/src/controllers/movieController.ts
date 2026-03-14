@@ -358,3 +358,40 @@ export const searchMovies = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to search movies" })
   }
 }
+
+export const updateMovie = async (req: AuthRequest, res: Response) => {
+  try {
+    const id = req.params.id as string
+    const userId = req.userId
+
+    const { title, synopsis, runtime, visibility, posterUrl } = req.body
+
+    const movie = await prisma.movie.findUnique({
+      where: { id }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    if (movie.creatorId !== userId) {
+      return res.status(403).json({ message: "Not authorized" })
+    }
+
+    const updatedMovie = await prisma.movie.update({
+      where: { id },
+      data: {
+        title,
+        synopsis,
+        runtime,
+        visibility,
+        posterUrl
+      }
+    })
+
+    res.json(updatedMovie)
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update movie" })
+  }
+}
