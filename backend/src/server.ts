@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import authRoutes from "./routes/authRoutes.js";
+import movieRoutes from "./routes/movieRoutes.js";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/auth", authRoutes);
+app.use("/movies", movieRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CineRealm API Running");
