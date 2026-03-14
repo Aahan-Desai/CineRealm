@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import prisma from "../config/prisma.js"
 import { Genre, Visibility } from "@prisma/client"
 import { AuthRequest } from "../middleware/authMiddleware.js"
+import { generateUniqueSlug } from "../utils/generateSlug.js"
 
 const validGenres = Object.values(Genre)
 
@@ -21,7 +22,7 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
       })
     }
 
-    const slug = title.toLowerCase().replace(/\s+/g, "-")
+    const slug = await generateUniqueSlug(title)
 
     const normalizedVisibility =
       (visibility as string)?.toUpperCase() as Visibility || Visibility.PRIVATE
