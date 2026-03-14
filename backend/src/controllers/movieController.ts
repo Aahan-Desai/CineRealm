@@ -288,3 +288,73 @@ export const exploreMovies = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch movies" })
   }
 }
+
+export const getMyMovies = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    const movies = await prisma.movie.findMany({
+      where: {
+        creatorId: userId
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+
+    const drafts = movies.filter(movie => !movie.isPublished)
+    const privateMovies = movies.filter(
+      movie => movie.isPublished && movie.visibility === "PRIVATE"
+    )
+    const published = movies.filter(
+      movie => movie.isPublished && movie.visibility === "PUBLIC"
+    )
+
+    res.json({
+      drafts,
+      private: privateMovies,
+      published
+    })
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch your movies" })
+  }
+}
+
+export const searchMovies = async (req: Request, res: Response) => {
+  try {
+    const query = req.query.q as string
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" })
+    }
+
+    const movies = await prisma.movie.findMany({
+      where: {
+        isPublished: true,
+        visibility: "PUBLIC",
+        title: {
+          contains: query,
+          mode: "insensitive"
+        }
+      },
+      include: {
+        creator: {
+          select: {
+            username: true
+          }
+        }
+      },
+      take: 10
+    })
+
+    res.json(movies)
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to search movies" })
+  }
+}
