@@ -1,0 +1,2 @@
+﻿src/middleware/uploadMiddleware.ts(1,8): error TS1259: Module '"C:/Users/Aahan Desai/cinerealm/backend/node_modules/@types/multer/index"' can only be default-imported using the 'esModuleInterop' flag
+src/middleware/uploadMiddleware.ts(8,5): error TS2353: Object literal may only specify known properties, and 'folder' does not exist in type 'Params'.

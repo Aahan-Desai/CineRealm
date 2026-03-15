@@ -308,10 +308,10 @@ export const getMyMovies = async (req: AuthRequest, res: Response) => {
 
     const drafts = movies.filter(movie => !movie.isPublished)
     const privateMovies = movies.filter(
-      movie => movie.isPublished && movie.visibility === "PRIVATE"
+      movie => movie.isPublished && movie.visibility === Visibility.PRIVATE
     )
     const published = movies.filter(
-      movie => movie.isPublished && movie.visibility === "PUBLIC"
+      movie => movie.isPublished && movie.visibility === Visibility.PUBLIC
     )
 
     res.json({
@@ -336,7 +336,7 @@ export const searchMovies = async (req: Request, res: Response) => {
     const movies = await prisma.movie.findMany({
       where: {
         isPublished: true,
-        visibility: "PUBLIC",
+        visibility: Visibility.PUBLIC,
         title: {
           contains: query,
           mode: "insensitive"
@@ -378,13 +378,17 @@ export const updateMovie = async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ message: "Not authorized" })
     }
 
+    const normalizedVisibility = visibility 
+      ? (visibility as string).toUpperCase() as Visibility 
+      : undefined
+
     const updatedMovie = await prisma.movie.update({
       where: { id },
       data: {
         title,
         synopsis,
         runtime,
-        visibility,
+        visibility: normalizedVisibility,
         posterUrl
       }
     })
