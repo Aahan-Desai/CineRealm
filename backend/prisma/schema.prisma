@@ -43,9 +43,9 @@ model Movie {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  genre       Genre
-  runtime     Int
-  synopsis    String
+  genre       Genre?
+  runtime     Int?
+  synopsis    String?
 
   posterUrl   String?
   isPublished Boolean  @default(false)

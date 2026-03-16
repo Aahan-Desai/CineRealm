@@ -10,16 +10,18 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
   try {
     const { title, genre, synopsis, runtime, visibility } = req.body
 
-    if (!title || !genre || !synopsis) {
-      return res.status(400).json({ message: "Missing required fields" })
+    if (!title) {
+      return res.status(400).json({ message: "Missing title" })
     }
 
-    const normalizedGenre = (genre as string).toUpperCase() as Genre
-
-    if (!validGenres.includes(normalizedGenre)) {
-      return res.status(400).json({
-        message: `Invalid genre. Must be one of: ${validGenres.join(", ")}`
-      })
+    let normalizedGenre: Genre | undefined = undefined
+    if (genre) {
+      normalizedGenre = (genre as string).toUpperCase() as Genre
+      if (!validGenres.includes(normalizedGenre)) {
+        return res.status(400).json({
+          message: `Invalid genre. Must be one of: ${validGenres.join(", ")}`
+        })
+      }
     }
 
     const slug = await generateUniqueSlug(title)
