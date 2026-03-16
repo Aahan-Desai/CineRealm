@@ -3,15 +3,26 @@ import prisma from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
+    let { username, email, password } = req.body;
+
+    username = username?.trim().toLowerCase();
+    email = email?.trim().toLowerCase();
+    password = password?.trim();
+
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        message: "All fields are required"
+      });
+    }
 
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
-          { email: email },
-          { username: username }
+          { email },
+          { username }
         ]
       }
     });
@@ -32,14 +43,18 @@ export const registerUser = async (req: Request, res: Response) => {
       }
     });
 
+    const { password: _, ...safeUser } = user;
+
     res.status(201).json({
       message: "User registered successfully",
-      user
+      user: safeUser
     });
 
   } catch (error) {
+    console.error("REGISTER ERROR:", error);
+
     res.status(500).json({
-      error: "Something went wrong"
+      message: "Something went wrong"
     });
   }
 };
@@ -48,22 +63,44 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   try {
 
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { email }
+    email = email?.trim().toLowerCase();
+    password = password?.trim();
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required"
+      });
+    }
+
+    console.log("LOGIN ATTEMPT:", { email });
+
+    // Find user by email OR username (case-insensitive)
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: { equals: email, mode: 'insensitive' } },
+          { username: { equals: email, mode: 'insensitive' } }
+        ]
+      }
     });
 
     if (!user) {
+      console.log("USER NOT FOUND for:", email);
       return res.status(400).json({
         message: "Invalid credentials"
       });
     }
 
+    console.log("USER FOUND:", { id: user.id, email: user.email, username: user.username });
+
     const validPassword = await bcrypt.compare(
       password,
       user.password
     );
+
+    console.log("PASSWORD MATCH:", validPassword);
 
     if (!validPassword) {
       return res.status(400).json({
@@ -77,14 +114,18 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: "7d" }
     );
 
+    const { password: _, ...safeUser } = user;
+
     res.json({
       token,
-      user
+      user: safeUser
     });
 
   } catch (error) {
+    console.error("LOGIN ERROR:", error);
+
     res.status(500).json({
-      error: "Something went wrong"
+      message: "Something went wrong"
     });
   }
 };
