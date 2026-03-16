@@ -27,7 +27,7 @@ export const createMovie = async (data: {
 export const updateMovie = async (
   movieId: string,
   data: Partial<Movie>
-) => {
+): Promise<Movie> => {
   return apiFetch(`/movies/${movieId}`, {
     method: "PATCH",
     body: JSON.stringify(data)

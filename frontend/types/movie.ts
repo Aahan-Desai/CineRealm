@@ -1,3 +1,6 @@
+import { Character } from "./character"
+import { Scene } from "./scene"
+
 export interface Movie {
   id: string
   title: string
@@ -8,6 +11,8 @@ export interface Movie {
   posterUrl?: string
   isPublished: boolean
   createdAt: string
+  characters?: Character[]
+  scenes?: Scene[]
 }
 
 export interface MyMoviesResponse {
