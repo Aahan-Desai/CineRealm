@@ -8,7 +8,7 @@ const validGenres = Object.values(Genre)
 
 export const createMovie = async (req: AuthRequest, res: Response) => {
   try {
-    const { title, genre, synopsis, runtime, visibility } = req.body
+    const { title, genre, synopsis, runtime, visibility, posterUrl, backdropUrl } = req.body
 
     if (!title) {
       return res.status(400).json({ message: "Missing title" })
@@ -43,7 +43,9 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
         runtime: runtime ?? 120,
         slug,
         creatorId: userId,
-        visibility: normalizedVisibility
+        visibility: normalizedVisibility,
+        posterUrl,
+        backdropUrl
       }
     })
 

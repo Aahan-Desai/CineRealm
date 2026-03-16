@@ -2,7 +2,7 @@
 
 import { uploadImage } from "@/lib/uploads";
 
-export default function PosterUpload({ onUpload }: { onUpload: (url: string) => void }) {
+export default function BackdropUpload({ onUpload }: { onUpload: (url: string) => void }) {
   const handleFileChange = async (file: File) => {
     try {
       const url = await uploadImage(file);
@@ -14,7 +14,7 @@ export default function PosterUpload({ onUpload }: { onUpload: (url: string) => 
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium">Poster Image</label>
+      <label className="text-sm font-medium">Backdrop Image</label>
 
       <input
         type="file"

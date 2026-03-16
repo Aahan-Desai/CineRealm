@@ -48,6 +48,7 @@ model Movie {
   synopsis    String?
 
   posterUrl   String?
+  backdropUrl String?
   isPublished Boolean  @default(false)
   visibility  Visibility @default(PRIVATE)
 

@@ -2,6 +2,7 @@ import { Character } from "./character"
 import { Scene } from "./scene"
 
 export interface Movie {
+  backdropUrl: string
   id: string
   title: string
   slug: string

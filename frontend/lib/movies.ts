@@ -41,9 +41,21 @@ export const publishMovie = async (movieId: string) => {
 }
 
 export const getExploreMovies = async () => {
-  return apiFetch("/movies/explore")
-}
+  const data = await apiFetch("/movies/explore");
+  return data.movies;
+};
 
 export const searchMovies = async (query: string) => {
   return apiFetch(`/movies/search?q=${query}`)
 }
+
+export const getMovieFull = async (slug: string) => {
+  const data = await apiFetch(`/movies/${slug}/full`);
+
+  return {
+    movie: data.movie,
+    scenes: data.scenes,
+    characters: data.characters,
+    ratings: data.ratings,
+  };
+};
