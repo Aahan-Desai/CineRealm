@@ -9,3 +9,9 @@ export interface Movie {
   isPublished: boolean
   createdAt: string
 }
+
+export interface MyMoviesResponse {
+  drafts: Movie[]
+  private: Movie[]
+  published: Movie[]
+}

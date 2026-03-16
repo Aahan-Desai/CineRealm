@@ -1,12 +1,8 @@
 import { apiFetch } from "./api"
-import { Movie } from "@/types/movie"
+import { MyMoviesResponse } from "@/types/movie"
 
-export const getMyMovies = async (): Promise<Movie[]> => {
+export const getMyMovies = async (): Promise<MyMoviesResponse> => {
   const data = await apiFetch("/movies/my")
 
-  return [
-    ...data.drafts,
-    ...data.private,
-    ...data.published
-  ]
+  return data
 }
