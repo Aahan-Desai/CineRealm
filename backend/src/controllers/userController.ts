@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import prisma from "../config/prisma.js"
+import { AuthRequest } from "../middleware/authMiddleware.js"
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
@@ -43,5 +44,27 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
   } catch (error) {
     res.status(500).json({ message: "Failed to load user profile" })
+  }
+}
+
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.userId
+
+    const { bio, avatarUrl, coverUrl } = req.body
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(bio !== undefined && { bio }),
+        ...(avatarUrl !== undefined && { avatarUrl }),
+        ...(coverUrl !== undefined && { coverUrl }),
+      },
+    })
+
+    res.json(updatedUser)
+  } catch (error) {
+    console.error("Update profile error:", error)
+    res.status(500).json({ message: "Failed to update profile" })
   }
 }

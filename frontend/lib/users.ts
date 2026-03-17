@@ -14,7 +14,6 @@ export const getUserProfile = async (
 ): Promise<UserProfileResponse> => {
   const data = await apiFetch(`/users/${username}`);
 
-  // 🔥 Normalize backend → frontend shape
   return {
     user: {
       username: data.username,
@@ -25,3 +24,14 @@ export const getUserProfile = async (
     averageRating: data.averageRating,
   };
 };
+
+export async function updateProfile(data: {
+  bio?: string
+  avatarUrl?: string
+  coverUrl?: string
+}) {
+  return apiFetch("/users/me", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  })
+}

@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
 type User = {
+  bio: string;
+  avatarUrl: string;
+  coverUrl: string;
   id?: string;
   username: string;
 };
