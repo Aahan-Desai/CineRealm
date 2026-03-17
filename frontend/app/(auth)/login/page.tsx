@@ -11,7 +11,7 @@ import { Card, CardContent} from "@/components/ui/card"
 
 export default function LoginPage() {
   const router = useRouter()
-  const setToken = useAuthStore((s) => s.setToken)
+  const setAuth = useAuthStore((s) => s.setAuth)
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -27,7 +27,7 @@ export default function LoginPage() {
         password,
       })
 
-      setToken(res.token)
+      setAuth(res.user, res.token);
 
       router.push("/studio")
     } catch (err: any) {

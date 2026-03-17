@@ -24,4 +24,4 @@ export interface MyMoviesResponse {
   published: Movie[]
 }
 
-export { Character, Scene }
+export type { Character, Scene }

@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { Movie } from "@/types/movie";
@@ -12,13 +14,9 @@ type Props = {
 export default function MovieHeroBanner({
   movie,
   ratings,
-}: {
-  movie: Movie;
-  ratings: Rating[];
-}) {
+}: Props) {
   const user = useAuthStore((s) => s.user);
 
-  // ⭐ Calculate average rating
   const { avg, count } = useMemo(() => {
     if (!ratings.length) return { avg: 0, count: 0 };
 
@@ -30,25 +28,27 @@ export default function MovieHeroBanner({
     };
   }, [ratings]);
 
-  // ⭐ Current user rating
-  const userRating = ratings.find((r) => r.userId === user?.id)?.rating;
+  const userRating = ratings.find(
+    (r) => r.user?.username === user?.username
+  )?.rating;
 
   return (
     <div className="relative w-full h-[80vh] overflow-hidden">
-      {/* Background */}
+
       <img
         src={movie.backdropUrl || movie.posterUrl}
         alt={movie.title}
         className="absolute inset-0 w-full h-full object-cover scale-105 brightness-50"
       />
 
-      {/* Gradient */}
       <div className="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent" />
 
-      {/* Content */}
       <div className="relative z-10 h-full flex items-center px-12">
         <div className="max-w-xl space-y-5">
-          <h1 className="text-6xl font-bold tracking-tight">{movie.title}</h1>
+
+          <h1 className="text-6xl font-bold tracking-tight">
+            {movie.title}
+          </h1>
 
           <p className="text-muted-foreground">
             {movie.genre} • {movie.runtime} min
@@ -63,7 +63,24 @@ export default function MovieHeroBanner({
             </Link>
           )}
 
-          <p className="text-sm line-clamp-3">{movie.synopsis}</p>
+          <div className="flex items-center gap-4 mt-2">
+            <span className="text-3xl font-bold text-yellow-400">
+              ★ {avg.toFixed(1)}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              ({count} ratings)
+            </span>
+          </div>
+
+          {userRating && (
+            <p className="text-sm text-muted-foreground">
+              You rated this {userRating} ★
+            </p>
+          )}
+
+          <p className="text-sm line-clamp-3">
+            {movie.synopsis}
+          </p>
 
           <div className="flex gap-4 mt-6">
             <button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:scale-105 transition">
@@ -74,6 +91,7 @@ export default function MovieHeroBanner({
               View Creator
             </button>
           </div>
+
         </div>
       </div>
     </div>

@@ -1,12 +1,25 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useAuthStore } from "@/store/authStore"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/authStore";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const token = useAuthStore((s) => s.token)
-  const logout = useAuthStore((s) => s.logout)
+  const token = useAuthStore((s) => s.token);
+  const logout = useAuthStore((s) => s.logout);
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  const [mounted, setMounted] = useState(false);
+
+  // 🔥 Hydrate Zustand
+  useEffect(() => {
+    hydrate();
+    setMounted(true);
+  }, [hydrate]);
+
+  // 🔥 Prevent hydration mismatch
+  if (!mounted) return null;
 
   return (
     <header className="border-b">
@@ -24,10 +37,7 @@ export default function Navbar() {
             <>
               <Link href="/studio">Studio</Link>
 
-              <Button
-                variant="outline"
-                onClick={logout}
-              >
+              <Button variant="outline" onClick={logout}>
                 Logout
               </Button>
             </>
@@ -40,5 +50,5 @@ export default function Navbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }

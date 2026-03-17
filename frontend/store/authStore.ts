@@ -1,22 +1,49 @@
 import { create } from "zustand";
 
-interface AuthState {
-  user: any;
-  token: string | null
-  setToken: (token: string) => void
-  logout: () => void
-}
+type User = {
+  id?: string;
+  username: string;
+};
+
+type AuthState = {
+  user: User | null;
+  token: string | null;
+
+  setAuth: (user: User, token: string) => void;
+  logout: () => void;
+  hydrate: () => void;
+};
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+  user: null,
+  token: null,
 
-  setToken: (token) => {
-    localStorage.setItem("token", token)
-    set({ token })
+  // ✅ LOGIN
+  setAuth: (user, token) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    set({ user, token });
   },
 
+  // ✅ LOGOUT
   logout: () => {
-    localStorage.removeItem("token")
-    set({ token: null })
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    set({ user: null, token: null });
+  },
+
+  // ✅ RESTORE STATE
+  hydrate: () => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    if (token && user) {
+      set({
+        token,
+        user: JSON.parse(user),
+      });
+    }
   },
 }));
