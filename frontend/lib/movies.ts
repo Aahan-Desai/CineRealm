@@ -1,5 +1,8 @@
 import { apiFetch } from "./api"
 import { Movie } from "@/types/movie"
+import { Scene } from "@/types/scene"
+import { Character } from "@/types/character"
+import { Rating } from "@/types/rating"
   
 export const getMyMovies = async (): Promise<{
   drafts: Movie[]
@@ -49,13 +52,22 @@ export const searchMovies = async (query: string) => {
   return apiFetch(`/movies/search?q=${query}`)
 }
 
-export const getMovieFull = async (slug: string) => {
+export const getMovieFull = async (
+  slug: string
+): Promise<MovieFullResponse> => {
   const data = await apiFetch(`/movies/${slug}/full`);
 
   return {
     movie: data.movie,
     scenes: data.scenes,
     characters: data.characters,
-    ratings: data.ratings,
+    ratings: data.ratings || [],
   };
 };
+
+type MovieFullResponse = {
+  movie: Movie
+  scenes: Scene[]
+  characters: Character[]
+  ratings: Rating[]
+}

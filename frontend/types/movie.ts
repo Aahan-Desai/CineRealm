@@ -21,3 +21,5 @@ export interface MyMoviesResponse {
   private: Movie[]
   published: Movie[]
 }
+
+export { Character, Scene }
