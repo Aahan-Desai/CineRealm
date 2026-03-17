@@ -16,7 +16,10 @@ const data: MovieFullResponse = await getMovieFull(params.slug);
   return (
     <div className="space-y-12 pb-16">
 
-      <MovieHeroBanner movie={data.movie} />
+      <MovieHeroBanner
+        movie={data.movie}
+        ratings={data.ratings}
+      />  
 
       <div className="max-w-6xl mx-auto px-6 space-y-12">
 

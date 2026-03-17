@@ -1,8 +1,18 @@
-export default function ProfilePage({ params }: { params: { username: string } }) {
+import { getUserProfile } from "@/lib/users";
+
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileMovies from "@/components/profile/ProfileMovies";
+
+export default async function ProfilePage({ params }: any) {
+  const data = await getUserProfile(params.username);
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">User Profile</h1>
-      <p className="text-muted-foreground">Viewing profile of: @{params.username}</p>
+    <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
+
+      <ProfileHeader user={data.user} />
+
+      <ProfileMovies movies={data.movies} />
+
     </div>
   );
 }

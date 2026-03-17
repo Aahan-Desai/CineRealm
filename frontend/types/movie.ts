@@ -1,5 +1,6 @@
 import { Character } from "./character"
 import { Scene } from "./scene"
+import { User } from "./user"
 
 export interface Movie {
   backdropUrl: string
@@ -14,6 +15,7 @@ export interface Movie {
   createdAt: string
   characters?: Character[]
   scenes?: Scene[]
+  creator?: User;
 }
 
 export interface MyMoviesResponse {
