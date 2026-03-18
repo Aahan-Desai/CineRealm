@@ -1,11 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { loginUser } from "@/lib/auth";
-import { registerUser } from "@/lib/auth";
+import { redirect } from "next/navigation"
 
 export default function Home() {
-  return (
-    <div className="p-10">
-      <Button>Test Button</Button>
-    </div>
-  )
+  redirect("/feed");
 }
