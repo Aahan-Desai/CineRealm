@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto"
+
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -43,7 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
       }
     });
 
-    const { password: _, ...safeUser } = user;
+    const { password: _password, ...safeUser } = user;
 
     res.status(201).json({
       message: "User registered successfully",
@@ -74,8 +76,9 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    console.log("LOGIN ATTEMPT:", { email });
-
+    if (process.env.NODE_ENV === "development") {
+      console.log("LOGIN ATTEMPT:", { email });
+    }
     // Find user by email OR username (case-insensitive)
     const user = await prisma.user.findFirst({
       where: {
@@ -87,13 +90,17 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      console.log("USER NOT FOUND for:", email);
+      if (process.env.NODE_ENV === "development") {
+        console.log("USER NOT FOUND for:", email);
+      }
       return res.status(400).json({
         message: "Invalid credentials"
       });
     }
 
-    console.log("USER FOUND:", { id: user.id, email: user.email, username: user.username });
+    if (process.env.NODE_ENV === "development") {
+      console.log("USER FOUND:", { id: user.id, email: user.email, username: user.username });
+    }
 
     const validPassword = await bcrypt.compare(
       password,
@@ -108,18 +115,28 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "7d" }
-    );
+      process.env.JWT_SECRET!,
+      { expiresIn: "15m" }
+    )
 
-    const { password: _, ...safeUser } = user;
+    const refreshToken = crypto.randomBytes(40).toString("hex")
+
+    await prisma.refreshToken.create({
+      data: {
+        token: refreshToken,
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      },
+    })
+   const { password: _password, ...safeUser } = user;
 
     res.json({
-      token,
-      user: safeUser
-    });
+  user: safeUser,
+  accessToken,
+  refreshToken,
+})
 
   } catch (error) {
     console.error("LOGIN ERROR:", error);
@@ -129,3 +146,36 @@ export const loginUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const refreshAccessToken = async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token" })
+    }
+
+    const tokenInDb = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+    })
+
+    if (!tokenInDb) {
+      return res.status(401).json({ message: "Invalid refresh token" })
+    }
+
+    if (tokenInDb.expiresAt < new Date()) {
+      return res.status(401).json({ message: "Expired refresh token" })
+    }
+
+    const newAccessToken = jwt.sign(
+      { userId: tokenInDb.userId },
+      process.env.JWT_SECRET!,
+      { expiresIn: "15m" }
+    )
+
+    res.json({ accessToken: newAccessToken })
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to refresh token" })
+  }
+}

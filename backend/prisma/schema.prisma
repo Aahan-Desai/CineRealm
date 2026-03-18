@@ -41,6 +41,8 @@ model User {
   movies    Movie[]
   ratings   Rating[]
 
+  refreshTokens RefreshToken[]
+
   followers  Follow[] @relation("Followers")
   following  Follow[] @relation("Following")
 }
@@ -138,3 +140,11 @@ model Follow {
   @@unique([followerId, followingId])
 }
 
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+
+  user      User @relation(fields: [userId], references: [id])
+}
