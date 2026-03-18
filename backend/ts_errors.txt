@@ -1,8 +1,9 @@
-﻿src/controllers/userController.ts(107,16): error TS2322: Type 'string | string[]' is not assignable to type 'string | undefined'.
+﻿src/controllers/likeController.ts(13,22): error TS2339: Property 'user' does not exist on type 'Request<LikeParams, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/likeController.ts(31,22): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/controllers/likeController.ts(39,11): error TS2322: Type 'string | string[]' is not assignable to type 'string'.
   Type 'string[]' is not assignable to type 'string'.
-src/controllers/userController.ts(127,32): error TS2339: Property 'following' does not exist on type '{ username: string; email: string; password: string; id: string; bio: string | null; createdAt: Date; updatedAt: Date; avatarUrl: string | null; coverUrl: string | null; }'.
-src/controllers/userController.ts(127,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
-src/controllers/userController.ts(142,16): error TS2322: Type 'string | string[]' is not assignable to type 'string | undefined'.
+src/routes/likeRoutes.ts(13,9): error TS2322: Type 'string | string[]' is not assignable to type 'string | undefined'.
   Type 'string[]' is not assignable to type 'string'.
-src/controllers/userController.ts(162,32): error TS2339: Property 'followers' does not exist on type '{ username: string; email: string; password: string; id: string; bio: string | null; createdAt: Date; updatedAt: Date; avatarUrl: string | null; coverUrl: string | null; }'.
-src/controllers/userController.ts(162,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
+src/routes/likeRoutes.ts(25,22): error TS2339: Property 'user' does not exist on type 'Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>'.
+src/routes/likeRoutes.ts(33,11): error TS2322: Type 'string | string[]' is not assignable to type 'string'.
+  Type 'string[]' is not assignable to type 'string'.

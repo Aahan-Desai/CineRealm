@@ -16,6 +16,8 @@ export interface Movie {
   characters?: Character[]
   scenes?: Scene[]
   creator?: User;
+  likeCount: number;
+  isLiked: boolean;
 }
 
 export interface MyMoviesResponse {

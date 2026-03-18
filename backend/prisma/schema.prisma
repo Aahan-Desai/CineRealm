@@ -40,6 +40,7 @@ model User {
 
   movies    Movie[]
   ratings   Rating[]
+  likes     Like[]  
 
   refreshTokens RefreshToken[]
 
@@ -63,6 +64,7 @@ model Movie {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  likes       Like[]
   creatorId   String
   creator     User     @relation(fields: [creatorId], references: [id])
 
@@ -147,4 +149,16 @@ model RefreshToken {
   expiresAt DateTime
 
   user      User @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  movieId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
 }

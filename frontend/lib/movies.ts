@@ -62,6 +62,8 @@ export const getMovieFull = async (
     scenes: data.scenes,
     characters: data.characters,
     ratings: data.ratings || [],
+    likeCount: data.likeCount,
+    isLiked: data.isLiked,
   };
 };
 
@@ -70,6 +72,8 @@ type MovieFullResponse = {
   scenes: Scene[]
   characters: Character[]
   ratings: Rating[]
+  likeCount: number;
+  isLiked: boolean;
 }
 
 export const getFeed = async () => {
