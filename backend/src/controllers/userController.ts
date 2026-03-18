@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import prisma from "../config/prisma.js"
 import { AuthRequest } from "../middleware/authMiddleware.js"
+import jwt from "jsonwebtoken"
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
@@ -9,6 +10,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
+        followers: true,
+        following: true,
         movies: {
           where: {
             isPublished: true,
@@ -25,6 +28,27 @@ export const getUserProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" })
     }
 
+    const followersCount = user.followers.length
+    const followingCount = user.following.length
+
+    let currentUserId = null
+    const authHeader = req.headers.authorization
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const token = authHeader.split(" ")[1]
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
+        currentUserId = decoded.userId
+      } catch (err) {}
+    }
+
+    let isFollowing = false
+
+    if (currentUserId) {
+      isFollowing = user.followers.some(
+        (f) => f.followerId === currentUserId
+      )
+    }
+
     const moviesCount = user.movies.length
 
     const ratings = user.movies.flatMap(movie => movie.ratings)
@@ -35,11 +59,17 @@ export const getUserProfile = async (req: Request, res: Response) => {
         : null
 
     res.json({
+      id: user.id,
       username: user.username,
       bio: user.bio,
       moviesCount,
       averageRating,
-      movies: user.movies
+      movies: user.movies,
+      followersCount,
+      followingCount,
+      isFollowing,
+      avatarUrl: user.avatarUrl,
+      coverUrl: user.coverUrl,
     })
 
   } catch (error) {

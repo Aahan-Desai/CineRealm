@@ -66,7 +66,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
 
       <TabsContent value="info">
         <div className="grid md:grid-cols-2 gap-10">
-          <PosterUpload movie={movieState} onUpdate={handleUpdate} />
+          <PosterUpload onUpload={(url) => handleUpdate({ ...movieState, posterUrl: url })} />
 
           <MovieInfoForm movie={movieState} onUpdate={handleUpdate} />
         </div>

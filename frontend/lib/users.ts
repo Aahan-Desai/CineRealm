@@ -3,7 +3,16 @@ import { Movie } from "@/types/movie";
 import { User } from "@/types/user";
 
 export type UserProfileResponse = {
-  user: User;
+  user: {
+    id: string;
+    username: string;
+    bio?: string;
+    avatarUrl?: string;
+    coverUrl?: string;
+    isFollowing: boolean;
+    followersCount: number;
+    followingCount: number;
+  };
   movies: Movie[];
   moviesCount: number;
   averageRating: number | null;
@@ -16,8 +25,14 @@ export const getUserProfile = async (
 
   return {
     user: {
+      id: data.id,
       username: data.username,
       bio: data.bio,
+      avatarUrl: data.avatarUrl,
+      coverUrl: data.coverUrl,
+      isFollowing: data.isFollowing,
+      followersCount: data.followersCount,
+      followingCount: data.followingCount,
     },
     movies: data.movies,
     moviesCount: data.moviesCount,
