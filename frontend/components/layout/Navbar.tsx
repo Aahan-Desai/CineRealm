@@ -35,6 +35,7 @@ export default function Navbar() {
 
           {token ? (
             <>
+              <Link href="/feed">Feed</Link>
               <Link href="/studio">Studio</Link>
 
               <Button variant="outline" onClick={logout}>

@@ -71,3 +71,7 @@ type MovieFullResponse = {
   characters: Character[]
   ratings: Rating[]
 }
+
+export const getFeed = async () => {
+  return apiFetch("/movies/feed")
+}
