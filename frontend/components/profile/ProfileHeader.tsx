@@ -93,9 +93,21 @@ export default function ProfileHeader({ user }: Props) {
           </button>
         )}
 
-        <p className="text-sm text-gray-400 mt-1">
-          {user.followersCount} followers • {user.followingCount} following
-        </p>
+        <div className="text-sm text-gray-400 mt-1 flex gap-4">
+          <a
+            href={`/profile/${user.username}/followers`}
+            className="hover:underline"
+          >
+            {user.followersCount || 0} followers
+          </a>
+
+          <a
+            href={`/profile/${user.username}/following`}
+            className="hover:underline"
+          >
+            {user.followingCount || 0} following
+          </a>
+        </div>
       </div>
     </div>
   );

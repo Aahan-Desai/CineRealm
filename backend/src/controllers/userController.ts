@@ -98,3 +98,73 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Failed to update profile" })
   }
 }
+
+export const getFollowing = async (req: Request, res: Response) => {
+  console.log("FOLLOWING ROUTE HIT", req.params.username)
+  try {
+    const username = req.params.username as string
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        following: {
+          include: {
+            following: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
+    }
+
+    const followingList = user.following.map((f) => f.following)
+
+    res.json(followingList)
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Failed to fetch following list" })
+  }
+}
+
+export const getFollowers = async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username as string
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: {
+        followers: {
+          include: {
+            follower: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
+    }
+
+    const followersList = user.followers.map((f) => f.follower)
+
+    res.json(followersList)
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch followers" })
+  }
+}
