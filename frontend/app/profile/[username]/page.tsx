@@ -19,7 +19,7 @@ export default async function ProfilePage({
     const data = await getUserProfile(username);
 
     return (
-      <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 space-y-12">
         <ProfileHeader user={data.user} />
         <ProfileMovies movies={data.movies} />
       </div>

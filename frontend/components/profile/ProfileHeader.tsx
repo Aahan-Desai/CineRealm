@@ -18,42 +18,59 @@ export default function ProfileHeader({ user }: Props) {
   const isOwner = currentUser?.username === user.username
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
+
       {/* COVER */}
-      <div className="h-60 w-full bg-gray-800 rounded-xl overflow-hidden">
-        {user.coverUrl && (
+      <div className="relative h-[280px] w-full rounded-xl overflow-hidden">
+        {user.coverUrl ? (
           <img
             src={user.coverUrl}
             className="w-full h-full object-cover"
           />
+        ) : (
+          <div className="w-full h-full bg-linear-to-br from-gray-800 to-black" />
+        )}
+
+        {/* GRADIENT OVERLAY */}
+        <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent" />
+
+        {/* EDIT BUTTON */}
+        {isOwner && (
+          <Link
+            href="/profile/edit"
+            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-black px-4 py-1 rounded-lg text-sm transition"
+          >
+            Edit Profile
+          </Link>
         )}
       </div>
 
-      {/* EDIT BUTTON */}
-      {isOwner && (
-        <Link
-          href="/profile/edit"
-          className="absolute top-4 right-4 bg-white text-black px-4 py-1 rounded-lg"
-        >
-          Edit Profile
-        </Link>
-      )}
+      {/* PROFILE INFO */}
+      <div className="relative px-6 -mt-16 flex items-end gap-5">
 
-      {/* AVATAR + INFO */}
-      <div className="flex items-center gap-4 mt-[-40px] px-4">
-        <div className="w-20 h-20 rounded-full bg-gray-700 overflow-hidden border-4 border-black">
+        {/* AVATAR */}
+        <div className="w-28 h-28 rounded-full border-4 border-black overflow-hidden bg-gray-700 shadow-lg">
           {user.avatarUrl ? (
-            <img src={user.avatarUrl} className="w-full h-full object-cover" />
+            <img
+              src={user.avatarUrl}
+              className="w-full h-full object-cover"
+            />
           ) : (
-            <div className="flex items-center justify-center h-full text-xl">
+            <div className="flex items-center justify-center h-full text-3xl font-bold">
               {user.username[0].toUpperCase()}
             </div>
           )}
         </div>
 
-        <div>
-          <h2 className="text-2xl font-bold">{user.username}</h2>
-          <p className="text-gray-400">{user.bio || "No bio yet."}</p>
+        {/* TEXT */}
+        <div className="pb-2">
+          <h1 className="text-3xl font-bold tracking-tight">
+            {user.username}
+          </h1>
+
+          <p className="text-gray-300 mt-1 max-w-xl text-sm leading-relaxed">
+            {user.bio || "No bio yet."}
+          </p>
         </div>
       </div>
     </div>
