@@ -100,7 +100,6 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 }
 
 export const getFollowing = async (req: Request, res: Response) => {
-  console.log("FOLLOWING ROUTE HIT", req.params.username)
   try {
     const username = req.params.username as string
 
@@ -168,3 +167,23 @@ export const getFollowers = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch followers" })
   }
 }
+
+export const getSuggestions = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId!;
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        not: userId,
+      },
+      followers: {
+        none: {
+          followerId: userId,
+        },
+      },
+    },
+    take: 5,
+  });
+
+  res.json(users);
+};

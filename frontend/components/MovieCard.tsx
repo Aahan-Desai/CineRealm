@@ -47,7 +47,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     <div className="group relative w-full rounded-xl overflow-hidden border border-[#262A35]/50 bg-[#1A1D26] transition-transform duration-300 hover:scale-[1.02]">
       <Link
         href={`/movies/${movie.slug}`}
-        className="relative block aspect-[2/3] w-full"
+        className="relative block aspect-2/3 w-full"
       >
         {/* Poster image fills the entire card */}
         {movie.posterUrl ? (
@@ -57,13 +57,13 @@ export default function MovieCard({ movie }: { movie: Movie }) {
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#151821] via-[#1A1D26] to-[#0F1115]">
+          <div className="absolute inset-0 bg-linear-to-br from-[#151821] via-[#1A1D26] to-[#0F1115]">
             <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,#E5484D,transparent_45%)]" />
           </div>
         )}
 
         {/* Gradient overlay at bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1115]/95 via-[#0F1115]/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0F1115]/95 via-[#0F1115]/40 to-transparent" />
 
         {/* Title and meta are rendered on the image */}
         <div className="absolute inset-x-0 bottom-0 p-4 pr-24">

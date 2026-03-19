@@ -41,3 +41,7 @@ export async function apiFetch(
     return text;
   }
 }
+
+export const getSuggestions = () => {
+  return apiFetch("/users/suggestions");
+};

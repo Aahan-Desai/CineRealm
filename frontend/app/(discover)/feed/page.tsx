@@ -78,7 +78,9 @@ export default function FeedPage() {
     for (const m of movies) {
       const c = m.creator
       if (!c?.username) continue
-      if (!map.has(c.username)) map.set(c.username, { username: c.username, avatarUrl: c.avatarUrl })
+      if (!map.has(c.username)) {
+        map.set(c.username, { username: c.username, avatarUrl: c.avatarUrl })
+      }
       if (map.size >= 5) break
     }
     return Array.from(map.values())

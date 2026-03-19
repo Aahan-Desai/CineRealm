@@ -50,3 +50,7 @@ export async function updateProfile(data: {
     body: JSON.stringify(data),
   })
 }
+
+export const getSuggestions = () => {
+  return apiFetch("/users/suggestions");
+};
