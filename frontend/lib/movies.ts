@@ -76,6 +76,6 @@ type MovieFullResponse = {
   isLiked: boolean;
 }
 
-export const getFeed = async () => {
-  return apiFetch("/movies/feed")
+export const getFeed = async (page: number = 1, limit: number = 10) => {
+  return apiFetch(`/movies/feed?page=${page}&limit=${limit}`)
 }

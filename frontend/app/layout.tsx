@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import StudioSidebar from "@/components/layout/StudioSidebar";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -15,9 +16,10 @@ export default function RootLayout({
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
         <Navbar />
-        <main className="max-w-6xl mx-auto px-6 py-6">
-          {children}
-        </main>
+        <div className="flex">
+          <StudioSidebar />
+          <main className="flex-1 min-w-0">{children}</main>
+        </div>
       </body>
     </html>
   );
