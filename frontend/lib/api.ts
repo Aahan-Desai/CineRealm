@@ -9,19 +9,35 @@ export async function apiFetch(
       ? localStorage.getItem("token")
       : null;
 
+  const isFormData = options.body instanceof FormData;
+
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     },
   });
 
+  // Read response as text FIRST
+  const text = await res.text();
+
+  // ❌ Handle errors safely
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || "API request failed");
+    try {
+      const errorData = JSON.parse(text);
+      throw new Error(errorData.message || "API request failed");
+    } catch {
+      throw new Error(text || "API request failed");
+    }
   }
 
-  return res.json();
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
 }

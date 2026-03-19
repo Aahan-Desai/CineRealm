@@ -4,7 +4,11 @@ import streamifier from "streamifier"
 
 export const uploadImage = async (req: Request, res: Response) => {
   try {
-    const file = req.file
+    const file =
+      req.file ??
+      (Array.isArray(req.files) && req.files.length > 0
+        ? req.files[0]
+        : undefined)
     if (!file) {
       return res.status(400).json({ message: "No file uploaded" })
     }

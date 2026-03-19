@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/authStore"
 import { updateProfile } from "@/lib/users"
 import { apiFetch } from "@/lib/api"
+import ImageCropModal from "@/components/profile/ImageCropModal"
 
 export default function EditProfilePage() {
   const router = useRouter()
@@ -18,6 +19,8 @@ export default function EditProfilePage() {
   const [coverUrl, setCoverUrl] = useState("")
 
   const [loading, setLoading] = useState(false)
+  const [cropType, setCropType] = useState<"avatar" | "cover" | null>(null)
+  const [pendingFile, setPendingFile] = useState<File | null>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -41,7 +44,7 @@ export default function EditProfilePage() {
     )
   }
 
-    const handleUpload = async (file: File) => {
+  const handleUpload = async (file: File) => {
     const formData = new FormData()
     formData.append("file", file)
 
@@ -53,22 +56,16 @@ export default function EditProfilePage() {
     return res.url
   }
 
-  const handleAvatarChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return
-
-    const url = await handleUpload(e.target.files[0])
-    setAvatarUrl(url)
+    setCropType("avatar")
+    setPendingFile(e.target.files[0])
   }
 
-  const handleCoverChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return
-
-    const url = await handleUpload(e.target.files[0])
-    setCoverUrl(url)
+    setCropType("cover")
+    setPendingFile(e.target.files[0])
   }
 
   const handleSave = async () => {
@@ -93,6 +90,7 @@ export default function EditProfilePage() {
   }
 
   return (
+    <>
     <div className="max-w-2xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold">Edit Profile</h1>
 
@@ -108,7 +106,7 @@ export default function EditProfilePage() {
           />
         )}
 
-        <input type="file" onChange={handleCoverChange} />
+        <input type="file" accept="image/*" onChange={handleCoverChange} />
       </div>
 
       <div>
@@ -123,7 +121,7 @@ export default function EditProfilePage() {
           />
         )}
 
-        <input type="file" onChange={handleAvatarChange} />
+        <input type="file" accept="image/*" onChange={handleAvatarChange} />
       </div>
 
       <div>
@@ -147,5 +145,26 @@ export default function EditProfilePage() {
         {loading ? "Saving..." : "Save Changes"}
       </button>
     </div>
+    <ImageCropModal
+      isOpen={!!cropType && !!pendingFile}
+      file={pendingFile}
+      title={cropType === "avatar" ? "Crop avatar" : "Crop cover image"}
+      aspect={cropType === "avatar" ? 1 : 16 / 9}
+      onCancel={() => {
+        setCropType(null)
+        setPendingFile(null)
+      }}
+      onComplete={async (croppedFile, previewUrl) => {
+        const url = await handleUpload(croppedFile)
+        if (cropType === "avatar") {
+          setAvatarUrl(url)
+        } else if (cropType === "cover") {
+          setCoverUrl(url)
+        }
+        setCropType(null)
+        setPendingFile(null)
+      }}
+    />
+    </>
   )
 }
