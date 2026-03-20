@@ -160,9 +160,10 @@ export const getMovieStudio = async (req: AuthRequest, res: Response) => {
   }
 }
 
-export const getFullMovie = async (req: Request, res: Response) => {
+export const getFullMovie = async (req: AuthRequest, res: Response) => {
   try {
     const slug = req.params.slug as string
+    const userId = req.userId
 
     const movie = await prisma.movie.findUnique({
       where: { slug },
@@ -170,7 +171,8 @@ export const getFullMovie = async (req: Request, res: Response) => {
         creator: {
           select: {
             id: true,
-            username: true
+            username: true,
+            avatarUrl: true
           }
         },
         characters: true,
@@ -187,7 +189,18 @@ export const getFullMovie = async (req: Request, res: Response) => {
             }
           }
         },
-        ratings: true
+        ratings: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true
+              }
+            }
+          }
+        },
+        likes: true
       }
     })
 
@@ -195,7 +208,10 @@ export const getFullMovie = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Movie not found" })
     }
 
-    if (!movie.isPublished || movie.visibility !== Visibility.PUBLIC) {
+    const isOwner = userId === movie.creatorId
+    const isPublic = movie.isPublished && movie.visibility === Visibility.PUBLIC
+
+    if (!isPublic && !isOwner) {
       return res.status(403).json({ message: "Movie not available" })
     }
 
@@ -205,6 +221,10 @@ export const getFullMovie = async (req: Request, res: Response) => {
           movie.ratings.length
         : null
 
+    const isLiked = userId 
+      ? movie.likes.some(like => like.userId === userId)
+      : false
+
     res.json({
       movie: {
         id: movie.id,
@@ -213,6 +233,7 @@ export const getFullMovie = async (req: Request, res: Response) => {
         runtime: movie.runtime,
         synopsis: movie.synopsis,
         posterUrl: movie.posterUrl,
+        backdropUrl: movie.backdropUrl,
         creator: movie.creator,
         averageRating
       },
@@ -225,10 +246,14 @@ export const getFullMovie = async (req: Request, res: Response) => {
         sceneOrder: scene.sceneOrder,
         scriptText: scene.scriptText,
         characters: scene.characters.map(sc => sc.character)
-      }))
+      })),
+      ratings: movie.ratings,
+      likeCount: movie.likes.length,
+      isLiked
     })
 
   } catch (error) {
+    console.error("Fetch full movie error:", error)
     res.status(500).json({ message: "Failed to fetch movie screenplay" })
   }
 }

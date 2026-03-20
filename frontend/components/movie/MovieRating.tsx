@@ -10,6 +10,8 @@ export default function MovieRating({
   currentUserId,
 }: any) {
 
+  const user = useAuthStore((state) => state.user);
+
   const [userRating, setUserRating] = useState<number | null>(() => {
     const existing = ratings.find(
       (r: any) => r.userId === currentUserId
@@ -91,4 +93,3 @@ export default function MovieRating({
   );
 }
 
-const user = useAuthStore((state) => state.user);

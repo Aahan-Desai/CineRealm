@@ -25,12 +25,16 @@ export async function apiFetch(
 
   // ❌ Handle errors safely
   if (!res.ok) {
+    let errorMessage = text || "API request failed";
     try {
       const errorData = JSON.parse(text);
-      throw new Error(errorData.message || "API request failed");
+      if (errorData.message) {
+        errorMessage = errorData.message;
+      }
     } catch {
-      throw new Error(text || "API request failed");
+      // Not JSON, use original text or default
     }
+    throw new Error(errorMessage);
   }
 
   if (!text) return null;

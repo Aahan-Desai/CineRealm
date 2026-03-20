@@ -1,3 +1,5 @@
+"use client";
+
 import { getMovieFull } from "@/lib/movies";
 import MovieHeroBanner from "@/components/movie/MovieHeroBanner";
 import MovieSynopsis from "@/components/movie/MovieSynopsis";
@@ -7,8 +9,13 @@ import MovieRating from "@/components/movie/MovieRating";
 import MovieLikeButton from "@/components/movie/MovieLikeButton";
 import { MovieFullResponse } from "@/types/movieFull";
 
-export default async function MoviePage({ params }: any) {
-  const data: MovieFullResponse = await getMovieFull(params.slug);
+export default async function MoviePage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
+  const { slug } = await params;
+  const data: MovieFullResponse = await getMovieFull(slug);
   const user = null;
 
   return (
