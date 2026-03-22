@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getFeed } from "@/lib/movies";
 import MovieCard from "@/components/MovieCard";
-import MovieCardSkeleton from "@/components/skeletons/MovieCardSkeleton";
 import { Movie } from "@/types/movie";
 import Suggestions from "@/components/ui/suggestions";
+import MovieCardSkeleton from "@/components/skeletons/MovieCardSkeleton";
 
 export default function FeedPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -29,12 +29,11 @@ export default function FeedPage() {
 
       if (node) observer.current.observe(node);
     },
-    [loading, fetchingMore, hasMore]
+    [loading, fetchingMore, hasMore],
   );
 
   useEffect(() => {
     const fetchInitialFeed = async () => {
-      setLoading(true);
       try {
         const data = (await getFeed(1, 8)) as Movie[];
         setMovies(data);
@@ -78,9 +77,7 @@ export default function FeedPage() {
     <div className="max-w-6xl mx-auto p-6 md:p-8">
       {/* HEADER */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-(--text-primary)">
-          Feed
-        </h1>
+        <h1 className="text-3xl font-bold text-(--text-primary)">Feed</h1>
         <p className="text-(--text-secondary) mt-1">
           Discover movies from creators you follow
         </p>
@@ -90,20 +87,22 @@ export default function FeedPage() {
         {/* FEED */}
         <div className="flex-1 min-w-0">
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
-            {loading ? (
+            {/* movies */}
+            {movies.map((movie, index) => (
+              <div
+                key={movie.id}
+                ref={movies.length === index + 1 ? lastElementRef : undefined}
+                className="animate-in fade-in duration-500"
+              >
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+
+            {/* initial skeleton */}
+            {loading &&
               Array.from({ length: 8 }).map((_, i) => (
                 <MovieCardSkeleton key={`skeleton-${i}`} />
-              ))
-            ) : (
-              movies.map((movie, index) => (
-                <div
-                  key={movie.id}
-                  ref={movies.length === index + 1 ? lastElementRef : undefined}
-                >
-                  <MovieCard movie={movie} />
-                </div>
-              ))
-            )}
+              ))}
 
             {/* loading more skeletons */}
             {fetchingMore &&
