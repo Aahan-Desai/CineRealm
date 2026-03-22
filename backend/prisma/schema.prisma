@@ -73,6 +73,11 @@ model Movie {
   ratings     Rating[]
 }
 
+enum CreationType {
+  quick
+  full
+}
+
 model Scene {
   id         String   @id @default(cuid())
   title      String

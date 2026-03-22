@@ -7,6 +7,9 @@ import { generateUniqueSlug } from "../utils/generateSlug.js"
 const validGenres = Object.values(Genre)
 
 export const createMovie = async (req: AuthRequest, res: Response) => {
+  
+  const userId = req.userId as string;
+  
   try {
     const { title, genre, synopsis, runtime, visibility, posterUrl, backdropUrl } = req.body
 
@@ -45,7 +48,8 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
         creatorId: userId,
         visibility: normalizedVisibility,
         posterUrl,
-        backdropUrl
+        backdropUrl,
+        CreationType: creationType || "full"
       }
     })
 
