@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "Movie" ALTER COLUMN "genre" DROP NOT NULL,
-ALTER COLUMN "runtime" DROP NOT NULL,
-ALTER COLUMN "synopsis" DROP NOT NULL;

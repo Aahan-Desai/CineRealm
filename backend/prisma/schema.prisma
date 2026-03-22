@@ -7,6 +7,121 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String         @id @default(cuid())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  bio           String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  avatarUrl     String?
+  coverUrl      String?
+  following     Follow[]       @relation("Following")
+  followers     Follow[]       @relation("Followers")
+  likes         Like[]
+  movies        Movie[]
+  ratings       Rating[]
+  refreshTokens RefreshToken[]
+}
+
+model Movie {
+  id           String      @id @default(cuid())
+  title        String
+  slug         String      @unique
+  genre        Genre?
+  runtime      Int?
+  synopsis     String?
+  posterUrl    String?
+  isPublished  Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  creatorId    String
+  visibility   Visibility  @default(PRIVATE)
+  backdropUrl  String?
+  creationType CreationType @default(FULL)
+  characters   Character[]
+  likes        Like[]
+  creator      User        @relation(fields: [creatorId], references: [id])
+  ratings      Rating[]
+  scenes       Scene[]
+}
+
+model Scene {
+  id         String           @id @default(cuid())
+  title      String
+  location   String?
+  scriptText String
+  actNumber  Int
+  sceneOrder Int
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  movieId    String
+  movie      Movie            @relation(fields: [movieId], references: [id])
+  characters SceneCharacter[]
+}
+
+model Character {
+  id        String           @id @default(cuid())
+  name      String
+  actorName String?
+  avatarUrl String?
+  movieId   String
+  movie     Movie            @relation(fields: [movieId], references: [id])
+  scenes    SceneCharacter[]
+}
+
+model SceneCharacter {
+  sceneId     String
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id])
+  scene       Scene     @relation(fields: [sceneId], references: [id])
+
+  @@id([sceneId, characterId])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  rating    Int
+  userId    String
+  movieId   String
+  createdAt DateTime @default(now())
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, movieId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("Following", fields: [followerId], references: [id])
+  following   User     @relation("Followers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  movieId   String
+  createdAt DateTime @default(now())
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+}
+
 enum Visibility {
   PUBLIC
   PRIVATE
@@ -25,145 +140,7 @@ enum Genre {
   ADVENTURE
 }
 
-model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  bio       String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  avatarUrl String?
-  coverUrl  String?
-
-  movies    Movie[]
-  ratings   Rating[]
-  likes     Like[]  
-
-  refreshTokens RefreshToken[]
-
-  followers  Follow[] @relation("Followers")
-  following  Follow[] @relation("Following")
-}
-
-model Movie {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  genre       Genre?
-  runtime     Int?
-  synopsis    String?
-
-  posterUrl   String?
-  backdropUrl String?
-  isPublished Boolean  @default(false)
-  visibility  Visibility @default(PRIVATE)
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  likes       Like[]
-  creatorId   String
-  creator     User     @relation(fields: [creatorId], references: [id])
-
-  scenes      Scene[]
-  characters  Character[]
-  ratings     Rating[]
-}
-
 enum CreationType {
-  quick
-  full
-}
-
-model Scene {
-  id         String   @id @default(cuid())
-  title      String
-  location   String?
-  scriptText String
-
-  actNumber  Int
-  sceneOrder Int
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  movieId    String
-  movie      Movie    @relation(fields: [movieId], references: [id])
-
-  characters SceneCharacter[]
-}
-
-model Character {
-  id        String   @id @default(cuid())
-  name      String
-  actorName String?
-  avatarUrl String?
-
-  movieId   String
-  movie     Movie    @relation(fields: [movieId], references: [id])
-
-  scenes    SceneCharacter[]
-}
-
-model SceneCharacter {
-  sceneId     String
-  characterId String
-
-  scene       Scene     @relation(fields: [sceneId], references: [id])
-  character   Character @relation(fields: [characterId], references: [id])
-
-  @@id([sceneId, characterId])
-}
-
-model Rating {
-  id       String @id @default(cuid())
-  rating   Int
-
-  userId   String
-  movieId  String
-
-  user     User  @relation(fields: [userId], references: [id])
-  movie    Movie @relation(fields: [movieId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@unique([userId, movieId])
-}
-
-model Follow {
-  id          String @id @default(cuid())
-
-  followerId  String
-  followingId String
-
-  follower    User @relation("Following", fields: [followerId], references: [id])
-  following   User @relation("Followers", fields: [followingId], references: [id])
-
-  createdAt   DateTime @default(now())
-
-  @@unique([followerId, followingId])
-}
-
-model RefreshToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  userId    String
-  expiresAt DateTime
-
-  user      User @relation(fields: [userId], references: [id])
-}
-
-model Like {
-  id        String   @id @default(cuid())
-  userId    String
-  movieId   String
-  createdAt DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, movieId])
+  FULL
+  SIMPLE
 }

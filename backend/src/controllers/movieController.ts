@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import prisma from "../config/prisma.js"
-import { Genre, Visibility } from "@prisma/client"
+import { Genre, Visibility, CreationType } from "@prisma/client"
 import { AuthRequest } from "../middleware/authMiddleware.js"
 import { generateUniqueSlug } from "../utils/generateSlug.js"
 
@@ -11,7 +11,7 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
   const userId = req.userId as string;
   
   try {
-    const { title, genre, synopsis, runtime, visibility, posterUrl, backdropUrl } = req.body
+    const { title, genre, synopsis, runtime, visibility, posterUrl, backdropUrl, creationType } = req.body
 
     if (!title) {
       return res.status(400).json({ message: "Missing title" })
@@ -49,7 +49,7 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
         visibility: normalizedVisibility,
         posterUrl,
         backdropUrl,
-        CreationType: creationType || "full"
+        creationType: (creationType as string)?.toUpperCase() as CreationType || CreationType.FULL
       }
     })
 
