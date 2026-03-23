@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/authStore";
 import { Movie } from "@/types/movie";
 import { Rating } from "@/types/rating";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 type Props = {
   movie: Movie;
@@ -46,8 +47,8 @@ export default function MovieHeroBanner({
           alt={movie.title}
           className="w-full h-full object-cover brightness-[0.35]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent" />
       </motion.div>
 
       {/* Content Container */}
@@ -115,7 +116,7 @@ export default function MovieHeroBanner({
         transition={{ delay: 1.5, duration: 1 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent" />
+        <div className="w-px h-12 bg-linear-to-b from-primary to-transparent" />
       </motion.div>
     </div>
   );

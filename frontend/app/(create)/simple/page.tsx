@@ -36,7 +36,7 @@ export default function SimpleCreatePage() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-6 animate-in fade-in duration-1000">
-      <div className="max-w-3xl w-full space-y-10 bg-white/[0.03] border border-white/5 rounded-[40px] p-8 md:p-16 shadow-2xl relative overflow-hidden">
+      <div className="max-w-3xl w-full space-y-10 bg-white/0.03 border border-white/5 rounded-[40px] p-8 md:p-16 shadow-2xl relative overflow-hidden">
         {/* Background glow orb */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
         

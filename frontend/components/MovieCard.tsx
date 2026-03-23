@@ -49,11 +49,11 @@ export default function MovieCard({ movie }: { movie: Movie }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative w-full rounded-2xl overflow-hidden bg-card border border-white/[0.04] hover:border-white/10 transition-colors shadow-2xl shadow-black/40"
+      className="group relative w-full rounded-2xl overflow-hidden bg-card border border-white/0.04 hover:border-white/10 transition-colors shadow-2xl shadow-black/40"
     >
       <Link
         href={`/movies/${movie.slug}`}
-        className="relative block aspect-[2/3] w-full"
+        className="relative block aspect-2/3 w-full"
       >
         {/* Poster with Soft Zoom */}
         <div className="absolute inset-0 overflow-hidden">
@@ -64,14 +64,14 @@ export default function MovieCard({ movie }: { movie: Movie }) {
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
           ) : (
-            <div className="h-full w-full bg-gradient-to-br from-card via-[#12141c] to-background">
+            <div className="h-full w-full bg-linear-to-br from-card via-[#12141c] to-background">
               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,var(--primary),transparent_45%)]" />
             </div>
           )}
         </div>
 
         {/* Improved Cinematic Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-t from-background/95 via-background/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
         {/* Content Layer */}
         <div className="absolute inset-x-0 bottom-0 p-5 pt-10">

@@ -33,12 +33,12 @@ export default function ProfileHeader({ user }: Props) {
         {user.coverUrl ? (
           <img src={user.coverUrl} className="w-full h-full object-cover brightness-[0.4] group-hover:scale-105 transition-transform duration-1000" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#12141c] via-card to-background" />
+          <div className="w-full h-full bg-linear-to-br from-[#12141c] via-card to-background" />
         )}
 
         {/* GRADIENT OVERLAYS */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-background/40 via-transparent to-transparent" />
 
         {/* EDIT BUTTON */}
         {isOwner && (

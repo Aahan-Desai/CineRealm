@@ -23,10 +23,10 @@ export default function CreatePage() {
           {/* QUICK */}
           <div
             onClick={() => router.push("/create/simple")}
-            className="group cursor-pointer p-10 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 hover:bg-white/[0.05] transition-all duration-500 shadow-2xl relative overflow-hidden"
+            className="group cursor-pointer p-10 rounded-[32px] bg-white/0.03 border border-white/5 hover:border-primary/30 hover:bg-white/0.05 transition-all duration-500 shadow-2xl relative overflow-hidden"
           >
             {/* Hover Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="relative z-10">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 border border-primary/20 group-hover:scale-110 transition-transform duration-500">
@@ -61,10 +61,10 @@ export default function CreatePage() {
           {/* FULL */}
           <div
             onClick={() => router.push("/studio")}
-            className="group cursor-pointer p-10 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 hover:bg-white/[0.05] transition-all duration-500 shadow-2xl relative overflow-hidden"
+            className="group cursor-pointer p-10 rounded-[32px] bg-white/3 border border-white/5 hover:border-primary/30 hover:bg-white/0.05 transition-all duration-500 shadow-2xl relative overflow-hidden"
           >
             {/* Hover Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative z-10">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 border border-primary/20 group-hover:scale-110 transition-transform duration-500">

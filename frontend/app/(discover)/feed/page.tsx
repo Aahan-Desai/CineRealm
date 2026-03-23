@@ -114,7 +114,7 @@ export default function FeedPage() {
 
           {/* empty state */}
           {!loading && movies.length === 0 && (
-            <div className="mt-20 text-center py-20 rounded-3xl border border-dashed border-white/10 bg-white/[0.02]">
+            <div className="mt-20 text-center py-20 rounded-3xl border border-dashed border-white/10 bg-white/0.02">
               <p className="text-lg font-semibold text-foreground mb-2">Your feed is waiting.</p>
               <p className="text-muted-foreground max-w-sm mx-auto">Follow some creators to see their cinematic worlds unfold here.</p>
             </div>

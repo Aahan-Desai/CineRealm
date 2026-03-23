@@ -28,7 +28,7 @@ export default function StudioSidebar() {
               className={
                 isActive
                   ? "flex items-center gap-3 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-semibold text-primary"
-                  : "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/[0.03] hover:text-foreground transition-all"
+                  : "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/0.03 hover:text-foreground transition-all"
               }
             >
               <Icon size={20} className={isActive ? "text-primary" : "text-muted-foreground/70"} />
@@ -39,7 +39,7 @@ export default function StudioSidebar() {
       </nav>
       
       <div className="mt-auto px-4 pt-8">
-        <div className="rounded-2xl bg-gradient-to-br from-primary/10 to-transparent p-4 border border-primary/10">
+        <div className="rounded-2xl bg-linear-to-br from-primary/10 to-transparent p-4 border border-primary/10">
           <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">CineRealm Studio</p>
           <p className="text-[11px] text-muted-foreground leading-relaxed">Direct your story. Define your world.</p>
         </div>

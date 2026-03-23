@@ -12,7 +12,7 @@ export default function Suggestions() {
   }, []);
 
   return (
-    <div className="bg-white/[0.03] backdrop-blur-md rounded-2xl border border-white/5 p-6 shadow-xl">
+    <div className="bg-white/0.03 backdrop-blur-md rounded-2xl border border-white/5 p-6 shadow-xl">
       <h3 className="text-sm font-bold tracking-widest uppercase text-muted-foreground mb-6">
         Discover Creators
       </h3>

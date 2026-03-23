@@ -3,15 +3,18 @@ import prisma from "../config/prisma.js"
 import { Genre, Visibility, CreationType } from "@prisma/client"
 import { AuthRequest } from "../middleware/authMiddleware.js"
 import { generateUniqueSlug } from "../utils/generateSlug.js"
+import { similarity } from "../services/plagiarismService.js"
 
 const validGenres = Object.values(Genre)
 
 export const createMovie = async (req: AuthRequest, res: Response) => {
-  
-  const userId = req.userId as string;
-  
   try {
     const { title, genre, synopsis, runtime, visibility, posterUrl, backdropUrl, creationType } = req.body
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
 
     if (!title) {
       return res.status(400).json({ message: "Missing title" })
@@ -29,14 +32,27 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
 
     const slug = await generateUniqueSlug(title)
 
+    // Plagiarism check
+    if (synopsis) {
+      const existingMovies = await prisma.movie.findMany({
+        where: { isPublished: true },
+        select: { id: true, synopsis: true }
+      });
+
+      for (const m of existingMovies) {
+        if (!m.synopsis) continue;
+        const score = similarity(synopsis, m.synopsis);
+
+        if (score > 0.7) {
+          return res.status(400).json({
+            message: "This content is too similar to an existing movie."
+          });
+        }
+      }
+    }
+
     const normalizedVisibility =
       (visibility as string)?.toUpperCase() as Visibility || Visibility.PRIVATE
-
-    const userId = req.userId
-
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" })
-    }
 
     const movie = await prisma.movie.create({
       data: {
@@ -432,3 +448,4 @@ export const updateMovie = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Failed to update movie" })
   }
 }
+

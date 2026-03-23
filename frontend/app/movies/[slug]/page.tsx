@@ -41,7 +41,7 @@ export default async function MoviePage({
           <MovieScenes scenes={data.scenes} />
         </section>
 
-        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-600 bg-white/[0.02] border border-white/5 rounded-[40px] p-8 md:p-12">
+        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-600 bg-white/0.02 border border-white/5 rounded-[40px] p-8 md:p-12">
           <MovieRating movieId={data.movie.id} ratings={data.ratings} />
         </section>
       </div>
