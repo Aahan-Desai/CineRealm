@@ -49,13 +49,13 @@ export default function Navbar() {
       : "rounded-xl px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:bg-[#151821]/50 hover:text-[#F1F5F9]";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#262A35]/60 bg-[#0F1115]/80 backdrop-blur">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-[#F1F5F9]">
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-background/80 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="font-bold text-xl text-foreground tracking-tighter hover:opacity-80 transition-opacity">
           CineRealm
         </Link>
 
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1">
           <Link
             href="/explore"
             className={navLinkClass(isActive("/explore"))}
@@ -86,9 +86,9 @@ export default function Navbar() {
                 onClick={() => setMenuOpen((v) => !v)}
                 aria-haspopup="menu"
                 aria-expanded={menuOpen}
-                className="flex items-center gap-2 rounded-xl border border-[#262A35]/60 bg-[#151821]/40 px-2.5 py-1.5 hover:bg-[#151821]/60"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 hover:bg-white/10 transition-colors"
               >
-                <div className="h-9 w-9 overflow-hidden rounded-full border border-[#262A35]/60 bg-[#151821]">
+                <div className="h-8 w-8 overflow-hidden rounded-full border border-white/10 bg-muted">
                   {user?.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -98,26 +98,26 @@ export default function Navbar() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <span className="text-sm font-bold text-[#F1F5F9]">
+                      <span className="text-xs font-bold text-foreground">
                         {user?.username?.[0]?.toUpperCase() || "U"}
                       </span>
                     </div>
                   )}
                 </div>
-                <ChevronDown size={16} className="text-[#9CA3AF]" />
+                <ChevronDown size={14} className="text-muted-foreground mr-1" />
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl border border-[#262A35]/50 bg-[#151821] backdrop-blur p-2 shadow-sm">
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-white/10 bg-[#12141a] p-1.5 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                   <Link
                     href={`/profile/${user?.username || "me"}`}
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-[#F1F5F9] hover:bg-[#0F1115]/50"
+                    className="flex items-center rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-white/5 transition-colors"
                   >
-                    <span>Profile</span>
+                    Profile
                   </Link>
 
-                  <div className="h-px bg-[#262A35]/50 my-2" />
+                  <div className="h-px bg-white/5 my-1.5" />
 
                   <button
                     type="button"
@@ -125,7 +125,7 @@ export default function Navbar() {
                       logout();
                       setMenuOpen(false);
                     }}
-                    className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[#9CA3AF] hover:bg-[#0F1115]/50 hover:text-[#F1F5F9]"
+                    className="w-full flex items-center rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors"
                   >
                     Logout
                   </button>
@@ -135,7 +135,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center justify-center rounded-xl bg-[#E5484D] px-4 py-2 text-sm font-semibold text-[#ffffff] hover:bg-[#E5484D]/80"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20"
             >
               Login
             </Link>

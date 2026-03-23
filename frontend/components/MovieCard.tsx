@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Heart } from "lucide-react";
+import { motion } from "framer-motion";
 import { likeMovie, unlikeMovie } from "@/lib/likes";
 import { timeAgo } from "@/lib/utils/timeAgo";
 import { Movie } from "@/types/movie";
@@ -41,106 +42,106 @@ export default function MovieCard({ movie }: { movie: Movie }) {
 
   const creatorUsername = movie.creator?.username || "unknown";
   const creatorAvatarUrl = movie.creator?.avatarUrl;
-  const creatorInitial = creatorUsername[0]?.toUpperCase() || "?";
 
   return (
-    <div className="group relative w-full rounded-xl overflow-hidden border border-[#262A35]/50 bg-[#1A1D26] transition-all duration-300 hover:scale-[1.02] hover:border-white/10">
-      
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative w-full rounded-2xl overflow-hidden bg-card border border-white/[0.04] hover:border-white/10 transition-colors shadow-2xl shadow-black/40"
+    >
       <Link
         href={`/movies/${movie.slug}`}
-        className="relative block aspect-2/3 w-full"
+        className="relative block aspect-[2/3] w-full"
       >
-        {/* Poster */}
-        {movie.posterUrl ? (
-          <img
-            src={movie.posterUrl}
-            alt={movie.title}
-            className="absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.05] group-hover:brightness-110"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-linear-to-br from-[#151821] via-[#1A1D26] to-[#0F1115]">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,#E5484D,transparent_45%)]" />
-          </div>
-        )}
+        {/* Poster with Soft Zoom */}
+        <div className="absolute inset-0 overflow-hidden">
+          {movie.posterUrl ? (
+            <img
+              src={movie.posterUrl}
+              alt={movie.title}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-card via-[#12141c] to-background">
+              <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,var(--primary),transparent_45%)]" />
+            </div>
+          )}
+        </div>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#0F1115]/95 via-[#0F1115]/50 to-transparent" />
+        {/* Improved Cinematic Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
-        {/* Content */}
-        <div className="absolute inset-x-0 bottom-0 p-4 pr-24">
-          <h3 className="text-lg font-semibold leading-tight text-[#F1F5F9] group-hover:text-white transition">
-            {movie.title}
-          </h3>
+        {/* Content Layer */}
+        <div className="absolute inset-x-0 bottom-0 p-5 pt-10">
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold leading-tight text-foreground tracking-tight group-hover:text-white transition-colors">
+              {movie.title}
+            </h3>
 
-          <div className="mt-3 flex items-center gap-3">
-            <Link
-              href={`/profile/${creatorUsername}`}
-              onClick={(e) => e.stopPropagation()}
-              className="flex min-w-0 items-center gap-3 group/user"
-            >
-              <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-[#262A35]/50 bg-[#151821]">
-                {creatorAvatarUrl ? (
-                  <img
-                    src={creatorAvatarUrl}
-                    alt={`${creatorUsername} avatar`}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center">
-                    <span className="text-sm font-bold text-[#F1F5F9]">
-                      {creatorInitial}
-                    </span>
+            <div className="flex items-center justify-between">
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = `/profile/${creatorUsername}`;
+                }}
+                className="flex items-center gap-2.5 group/user cursor-pointer"
+              >
+                <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-white/10 bg-muted/50 ring-2 ring-transparent group-hover/user:ring-white/20 transition-all">
+                  {creatorAvatarUrl ? (
+                    <img
+                      src={creatorAvatarUrl}
+                      alt={`${creatorUsername} avatar`}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="text-[10px] font-bold text-foreground">
+                        {creatorUsername[0]?.toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="truncate text-xs font-semibold text-foreground group-hover/user:text-primary transition-colors">
+                    {creatorUsername}
                   </div>
-                )}
-              </div>
-
-              <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-[#F1F5F9] group-hover/user:underline">
-                  {creatorUsername}
-                </div>
-
-                <div
-                  title={new Date(movie.createdAt).toLocaleString()}
-                  className="truncate text-xs text-[#9CA3AF]"
-                >
-                  {timeAgo(movie.createdAt)}
+                  <div className="text-[10px] text-muted-foreground font-medium">
+                    {timeAgo(movie.createdAt)}
+                  </div>
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
         </div>
       </Link>
 
-      {/* Like Button */}
-      <button
-        type="button"
-        onClick={handleLike}
-        disabled={loading}
-        aria-label={liked ? "Unlike movie" : "Like movie"}
-        className={`absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-full border px-3 py-1.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 active:scale-95 ${
-          liked
-            ? "border-[#E5484D]/40 bg-[#E5484D]/10"
-            : "border-[#262A35] bg-[#151821]/60 hover:bg-[#151821]"
-        }`}
-      >
-        <Heart
-          size={18}
-          strokeWidth={1.8}
-          className={`transition-transform duration-200 ${
+      {/* Like Button - Floating cinematic style */}
+      <div className="absolute top-4 right-4 z-10">
+        <button
+          type="button"
+          onClick={handleLike}
+          disabled={loading}
+          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 backdrop-blur-md transition-all duration-300 border active:scale-90 ${
             liked
-              ? "text-[#E5484D] scale-110"
-              : "text-[#9CA3AF] group-hover:text-[#F1F5F9]"
+              ? "bg-primary/20 border-primary/30 text-primary"
+              : "bg-black/20 border-white/5 text-muted-foreground hover:bg-black/40 hover:border-white/10 hover:text-white"
           }`}
-          fill={liked ? "#E5484D" : "transparent"}
-        />
-
-        <span className="text-sm font-semibold text-[#F1F5F9]">
-          {count}
-        </span>
-      </button>
-
-      {/* Hover ring */}
-      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-transparent transition group-hover:ring-white/10" />
-    </div>
+        >
+          <Heart
+            size={14}
+            strokeWidth={liked ? 0 : 2.5}
+            fill={liked ? "currentColor" : "transparent"}
+            className={liked ? "animate-pulse" : ""}
+          />
+          <span className="text-[11px] font-bold">
+            {count}
+          </span>
+        </button>
+      </div>
+    </motion.div>
   );
 }

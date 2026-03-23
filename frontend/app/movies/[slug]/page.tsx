@@ -19,21 +19,31 @@ export default async function MoviePage({
   const user = null;
 
   return (
-    <div className="space-y-12 pb-16">
+    <div className="min-h-screen animate-in fade-in duration-1000">
       <MovieHeroBanner movie={data.movie} ratings={data.ratings} />
 
-      <div className="max-w-6xl mx-auto px-6">
-        <MovieLikeButton movie={data.movie} />
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
+        <div className="flex items-center gap-6 p-1">
+          <MovieLikeButton movie={data.movie} />
+        </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 space-y-12">
-        <MovieSynopsis synopsis={data.movie.synopsis} />
+      <div className="max-w-7xl mx-auto px-6 py-16 space-y-24">
+        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
+          <MovieSynopsis synopsis={data.movie.synopsis} />
+        </section>
 
-        <MovieCharacters characters={data.characters} />
+        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-400">
+          <MovieCharacters characters={data.characters} />
+        </section>
 
-        <MovieScenes scenes={data.scenes} />
+        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-500">
+          <MovieScenes scenes={data.scenes} />
+        </section>
 
-        <MovieRating movieId={data.movie.id} ratings={data.ratings} />
+        <section className="animate-in fade-in slide-in-from-bottom-5 duration-700 delay-600 bg-white/[0.02] border border-white/5 rounded-[40px] p-8 md:p-12">
+          <MovieRating movieId={data.movie.id} ratings={data.ratings} />
+        </section>
       </div>
     </div>
   );

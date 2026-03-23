@@ -33,67 +33,90 @@ export default function MovieHeroBanner({
   )?.rating;
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden">
+    <div className="relative w-full h-[85svh] min-h-[600px] overflow-hidden">
+      {/* Background Image with Cinematic Effects */}
+      <motion.div 
+        initial={{ scale: 1.1, opacity: 0 }}
+        animate={{ scale: 1.05, opacity: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="absolute inset-0"
+      >
+        <img
+          src={movie.backdropUrl || movie.posterUrl}
+          alt={movie.title}
+          className="w-full h-full object-cover brightness-[0.35]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+      </motion.div>
 
-      <img
-        src={movie.backdropUrl || movie.posterUrl}
-        alt={movie.title}
-        className="absolute inset-0 w-full h-full object-cover scale-105 brightness-50"
-      />
+      {/* Content Container */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex items-center">
+        <motion.div 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-2xl space-y-8"
+        >
+          {/* Metadata Badge */}
+          <div className="flex flex-wrap items-center gap-3 text-sm font-bold tracking-widest uppercase text-primary/80">
+            <span>{movie.genre}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+            <span>{movie.runtime} Minutes</span>
+            {movie.year && (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                <span>{movie.year}</span>
+              </>
+            )}
+          </div>
 
-      <div className="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent" />
-
-      <div className="relative z-10 h-full flex items-center px-12">
-        <div className="max-w-xl space-y-5">
-
-          <h1 className="text-6xl font-bold tracking-tight">
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-white">
             {movie.title}
           </h1>
 
-          <p className="text-muted-foreground">
-            {movie.genre} • {movie.runtime} min
-          </p>
-
-          {movie.creator && (
-            <Link
-              href={`/profile/${movie.creator.username}`}
-              className="text-sm text-muted-foreground hover:underline"
-            >
-              Created by @{movie.creator.username}
-            </Link>
-          )}
-
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-3xl font-bold text-yellow-400">
-              ★ {avg.toFixed(1)}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              ({count} ratings)
-            </span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md rounded-2xl p-2.5 pr-5 border border-white/10">
+              <span className="text-3xl font-black text-white ml-1">
+                {avg > 0 ? avg.toFixed(1) : "—"}
+              </span>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Global Rating</span>
+                <span className="text-xs text-muted-foreground font-medium">{count} reviews</span>
+              </div>
+            </div>
           </div>
 
-          {userRating && (
-            <p className="text-sm text-muted-foreground">
-              You rated this {userRating} ★
-            </p>
-          )}
-
-          <p className="text-sm line-clamp-3">
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium line-clamp-3">
             {movie.synopsis}
           </p>
 
-          <div className="flex gap-4 mt-6">
-            <button className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:scale-105 transition">
-              ⭐ Rate
+          <div className="flex flex-wrap gap-4 pt-4">
+            <button className="bg-primary text-white px-8 py-4 rounded-full font-bold text-base hover:scale-105 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95">
+              Rate This Story
             </button>
 
-            <button className="bg-white/20 backdrop-blur px-6 py-3 rounded-lg hover:bg-white/30 transition">
-              View Creator
-            </button>
+            {movie.creator && (
+              <Link
+                href={`/profile/${movie.creator.username}`}
+                className="bg-white/5 backdrop-blur-md border border-white/10 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white/10 transition-all hover:border-white/20"
+              >
+                Director: @{movie.creator.username}
+              </Link>
+            )}
           </div>
-
-        </div>
+        </motion.div>
       </div>
+      
+      {/* Scroll Down Hint */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      >
+        <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent" />
+      </motion.div>
     </div>
   );
 }

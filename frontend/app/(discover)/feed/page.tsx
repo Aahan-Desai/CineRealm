@@ -74,25 +74,26 @@ export default function FeedPage() {
   }, [page]);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 md:p-8">
+    <div className="max-w-7xl mx-auto px-6 py-10 md:py-14 animate-in fade-in duration-700">
       {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-(--text-primary)">Feed</h1>
-        <p className="text-(--text-secondary) mt-1">
-          Discover movies from creators you follow
+      <div className="mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter text-foreground mb-3">
+          Feed
+        </h1>
+        <p className="text-muted-foreground text-lg font-medium max-w-2xl">
+          Discover cinematic stories from the creators you follow.
         </p>
       </div>
 
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-10 items-start">
         {/* FEED */}
-        <div className="flex-1 min-w-0">
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex-1 min-w-0 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
             {/* movies */}
             {movies.map((movie, index) => (
               <div
                 key={movie.id}
                 ref={movies.length === index + 1 ? lastElementRef : undefined}
-                className="animate-in fade-in duration-500"
               >
                 <MovieCard movie={movie} />
               </div>
@@ -100,34 +101,35 @@ export default function FeedPage() {
 
             {/* initial skeleton */}
             {loading &&
-              Array.from({ length: 8 }).map((_, i) => (
+              Array.from({ length: 6 }).map((_, i) => (
                 <MovieCardSkeleton key={`skeleton-${i}`} />
               ))}
 
             {/* loading more skeletons */}
             {fetchingMore &&
-              Array.from({ length: 4 }).map((_, i) => (
+              Array.from({ length: 3 }).map((_, i) => (
                 <MovieCardSkeleton key={`more-${i}`} />
               ))}
           </div>
 
           {/* empty state */}
           {!loading && movies.length === 0 && (
-            <p className="mt-8 text-sm text-(--text-muted)">
-              Follow creators to see their movies here.
-            </p>
+            <div className="mt-20 text-center py-20 rounded-3xl border border-dashed border-white/10 bg-white/[0.02]">
+              <p className="text-lg font-semibold text-foreground mb-2">Your feed is waiting.</p>
+              <p className="text-muted-foreground max-w-sm mx-auto">Follow some creators to see their cinematic worlds unfold here.</p>
+            </div>
           )}
 
           {/* end state */}
           {!loading && !hasMore && movies.length > 0 && (
-            <p className="mt-6 text-center text-sm text-(--text-muted)">
-              You have caught up with all posts.
+            <p className="mt-16 text-center text-sm font-semibold tracking-widest uppercase text-muted-foreground/40">
+              End of the reel
             </p>
           )}
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <aside className="hidden lg:block w-80 shrink-0 sticky top-24">
+        <aside className="hidden lg:block w-80 shrink-0 sticky top-28">
           <Suggestions />
         </aside>
       </div>

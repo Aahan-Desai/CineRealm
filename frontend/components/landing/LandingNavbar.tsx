@@ -30,7 +30,7 @@ export default function LandingNavbar() {
         <Link href="/login" className="nav-link-ghost">
           Sign In
         </Link>
-        <Link href="/signup" className="nav-btn-primary">
+        <Link href="/register" className="nav-btn-primary">
           Get Started
         </Link>
       </div>

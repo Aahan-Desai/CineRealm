@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import LandingConditionalShell from "@/components/landing/LandingConditionalShell.js";
+import LandingConditionalShell from "@/components/landing/LandingConditionalShell";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });

@@ -1,10 +1,8 @@
-export default function ExploreHeader() {
-  return (
-    <div className="mb-8">
-      <h1 className="text-3xl font-bold text-[#F1F5F9]">Explore Movies</h1>
-      <p className="mt-1 text-sm text-[#6B7280]">
-        Discover stories created by the CineRealm community
+    <div className="mb-12">
+      <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white">
+        Explore Stories
+      </h1>
+      <p className="mt-3 text-lg font-medium text-muted-foreground max-w-2xl leading-relaxed">
+        Step into the diverse cinematic worlds created by our global community of directors.
       </p>
     </div>
-  );
-}

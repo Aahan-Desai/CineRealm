@@ -15,13 +15,8 @@ export default function StudioSidebar() {
   ]
 
   return (
-    <aside className="w-64 shrink-0 border-r border-[#262A35]/60 bg-[#0F1115] px-6 py-6 h-[calc(100vh-4rem)] overflow-y-auto">
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-[#F1F5F9]">CineRealm</h2>
-        <p className="text-sm text-[#6B7280]">Creator platform</p>
-      </div>
-
-      <nav className="space-y-2">
+    <aside className="w-64 shrink-0 border-r border-white/5 bg-background px-4 py-8 h-[calc(100vh-4rem)] overflow-y-auto hidden md:block">
+      <nav className="space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname?.startsWith(item.href)
@@ -32,16 +27,23 @@ export default function StudioSidebar() {
               href={item.href}
               className={
                 isActive
-                  ? "flex items-center gap-3 rounded-xl bg-[#151821] px-3 py-2 text-sm font-medium text-[#E5484D]"
-                  : "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-[#9CA3AF] hover:bg-[#151821]/50 hover:text-[#F1F5F9]"
+                  ? "flex items-center gap-3 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-semibold text-primary"
+                  : "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/[0.03] hover:text-foreground transition-all"
               }
             >
-              <Icon size={18} className="shrink-0" />
+              <Icon size={20} className={isActive ? "text-primary" : "text-muted-foreground/70"} />
               <span>{item.name}</span>
             </Link>
           )
         })}
       </nav>
+      
+      <div className="mt-auto px-4 pt-8">
+        <div className="rounded-2xl bg-gradient-to-br from-primary/10 to-transparent p-4 border border-primary/10">
+          <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">CineRealm Studio</p>
+          <p className="text-[11px] text-muted-foreground leading-relaxed">Direct your story. Define your world.</p>
+        </div>
+      </div>
     </aside>
   )
 }

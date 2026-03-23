@@ -59,7 +59,7 @@ export default function HeroSection() {
           transition={{ duration: 0.9, ease: "easeOut", delay: 0.65 }}
           className="hero-ctas"
         >
-          <Link href="/signup" className="cta-primary">
+          <Link href="/register" className="cta-primary">
             Start Creating
           </Link>
           <Link href="/feed" className="cta-secondary">
