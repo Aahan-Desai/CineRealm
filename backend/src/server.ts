@@ -11,6 +11,7 @@ import ratingRoutes from "./routes/ratingRoutes.js";
 import { apiLimiter } from "./middleware/rateLimiter.js";
 import userRoutes from "./routes/userRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
+import feedbackRoutes from "./routes/feedbackRoutes.js";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/scene-characters", sceneCharacterRoutes);
 app.use("/ratings", ratingRoutes)
 app.use("/users", userRoutes)
 app.use("/uploads", uploadRoutes)
+app.use("/feedback", feedbackRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CineRealm API Running");

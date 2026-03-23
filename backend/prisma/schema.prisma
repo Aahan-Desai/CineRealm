@@ -23,6 +23,7 @@ model User {
   movies        Movie[]
   ratings       Rating[]
   refreshTokens RefreshToken[]
+  feedback      Feedback[]
 }
 
 model Movie {
@@ -143,4 +144,21 @@ enum Genre {
 enum CreationType {
   FULL
   SIMPLE
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  type      FeedbackType
+  message   String
+  page      String?
+  userId    String?
+
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum FeedbackType {
+  BUG
+  FEEDBACK
 }
