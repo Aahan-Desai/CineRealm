@@ -10,28 +10,32 @@ export default function ProfileRedirectPage() {
 
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
+  const hydrate = useAuthStore((s) => s.hydrate);
 
   useEffect(() => {
-    // 🚫 Don't do anything until hydrated
+    console.log("ProfileRedirectPage: Hydrating...")
+    hydrate();
+    setHydrated(true);
+  }, [hydrate]);
+
+  useEffect(() => {
+    // Don't do anything until hydrated
     if (!hydrated) return;
 
-    // ❌ No user → go login
+    // No user → go login
     if (!user) {
       router.push("/login");
       return;
     }
 
-    // ✅ User exists → go profile
+    console.log(`ProfileRedirectPage: Attempting redirect to /profile/${user.username}`);
     router.push(`/profile/${user.username}`);
   }, [hydrated, user, router]);
 
-  // 🛑 Prevent UI + errors before hydration
+  // Prevent UI + errors before hydration
   if (!hydrated) return null;
 
-  // 🛑 Prevent crash when user is null
+  // Prevent crash when user is null
   if (!user) return null;
 
   return null;

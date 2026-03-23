@@ -25,7 +25,8 @@ export default async function ProfilePage({
       </div>
     );
 
-  } catch {
+  } catch (err: any) {
+    console.error(`ProfilePage error for username "${username}":`, err.message || err);
     notFound();
   }
 }

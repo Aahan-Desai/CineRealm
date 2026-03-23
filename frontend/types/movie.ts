@@ -3,6 +3,7 @@ import { Scene } from "./scene"
 import { User } from "./user"
 
 export interface Movie {
+  creationType: any
   year: any
   backdropUrl: string
   id: string

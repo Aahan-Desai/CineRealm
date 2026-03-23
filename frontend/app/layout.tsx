@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import LandingConditionalShell from "@/components/landing/LandingConditionalShell";
 import { cn } from "@/lib/utils";
+import FeedbackButton from "@/components/ui/FeedbackButton";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -20,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
-        <LandingConditionalShell>{children}</LandingConditionalShell>
+        <LandingConditionalShell>
+          {children}
+          <FeedbackButton />
+        </LandingConditionalShell>
       </body>
     </html>
   );

@@ -5,10 +5,15 @@ import jwt from "jsonwebtoken"
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    const username = req.params.username as string
+    const username = (req.params.username as string).trim()
 
-    const user = await prisma.user.findUnique({
-      where: { username },
+    const user = await prisma.user.findFirst({
+      where: { 
+        username: {
+          equals: username,
+          mode: 'insensitive'
+        }
+      },
       include: {
         followers: true,
         following: true,

@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export async function apiFetch(
   endpoint: string,
@@ -11,6 +11,7 @@ export async function apiFetch(
 
   const isFormData = options.body instanceof FormData;
 
+  console.log(`apiFetch calling: ${API_URL}${endpoint}`);
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
@@ -20,11 +21,9 @@ export async function apiFetch(
     },
   });
 
-  // Read response as text FIRST
   const text = await res.text();
-
-  // ❌ Handle errors safely
   if (!res.ok) {
+    console.error(`apiFetch FAILED: ${API_URL}${endpoint} Status: ${res.status}`);
     let errorMessage = text || "API request failed";
     try {
       const errorData = JSON.parse(text);

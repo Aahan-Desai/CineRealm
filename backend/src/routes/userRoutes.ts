@@ -10,8 +10,8 @@ const router = express.Router()
 
 router.get("/:username/following", getFollowing)
 router.get("/:username/followers", getFollowers)
-router.get("/:username", getUserProfile)
 router.get("/suggestions", authenticate, getSuggestions)
+router.get("/:username", getUserProfile)
 
 
 router.patch("/me", authenticate, updateProfile)
