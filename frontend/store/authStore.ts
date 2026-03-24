@@ -11,8 +11,10 @@ type User = {
 type AuthState = {
   user: User | null;
   token: string | null;
+  refreshToken: string | null;
 
-  setAuth: (user: User, token: string) => void;
+  setAuth: (user: User, token: string, refreshToken?: string) => void;
+  setUser: (user: User) => void;
   logout: () => void;
   hydrate: () => void;
 };
@@ -20,32 +22,43 @@ type AuthState = {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
+  refreshToken: null,
+
+  // ✅ MERGE USER INFO
+  setUser: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user });
+  },
 
   // ✅ LOGIN
-  setAuth: (user, token) => {
+  setAuth: (user, token, refreshToken) => {
     if (token) localStorage.setItem("token", token);
+    if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
     if (user) localStorage.setItem("user", JSON.stringify(user));
 
-    set({ user, token });
+    set({ user, token, refreshToken: refreshToken || null });
   },
 
   // ✅ LOGOUT
   logout: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
 
-    set({ user: null, token: null });
+    set({ user: null, token: null, refreshToken: null });
   },
 
   // ✅ RESTORE STATE
   hydrate: () => {
     const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const userString = localStorage.getItem("user");
 
-    if (token && user) {
+    if (token && userString) {
       set({
         token,
-        user: JSON.parse(user),
+        refreshToken,
+        user: JSON.parse(userString),
       });
     }
   },

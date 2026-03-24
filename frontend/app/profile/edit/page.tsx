@@ -10,7 +10,7 @@ import ImageCropModal from "@/components/profile/ImageCropModal"
 export default function EditProfilePage() {
   const router = useRouter()
 
-  const { user, token, setAuth } = useAuthStore()
+  const { user, setUser } = useAuthStore()
 
   const [mounted, setMounted] = useState(false)
 
@@ -78,7 +78,7 @@ export default function EditProfilePage() {
         coverUrl,
       })
 
-      setAuth(updatedUser, token!)
+      setUser(updatedUser)
 
       router.push(`/profile/${updatedUser.username}`)
     } catch (err) {

@@ -27,7 +27,7 @@ export default function LoginPage() {
         password,
       })
 
-      setAuth(res.user, res.accessToken);
+      setAuth(res.user, res.accessToken, res.refreshToken);
 
       router.push("/studio")
     } catch (err: any) {

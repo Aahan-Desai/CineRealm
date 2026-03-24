@@ -23,6 +23,49 @@ export async function apiFetch(
 
   const text = await res.text();
   if (!res.ok) {
+    // Check if we should try refreshing the token
+    if (res.status === 401 && token) {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+        try {
+          const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (refreshRes.ok) {
+            const { accessToken } = await refreshRes.json();
+            localStorage.setItem("token", accessToken);
+            
+            // Retry the original request
+            return apiFetch(endpoint, options);
+          } else {
+            console.error("Token refresh response NOT ok. Status:", refreshRes.status);
+            // Refresh failed! clear session and redirect
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("token");
+              localStorage.removeItem("refreshToken");
+              localStorage.removeItem("user");
+              window.location.href = "/login";
+            }
+            throw new Error("Session expired. Please log in again.");
+          }
+        } catch (refreshErr) {
+          console.error("Token refresh failed:", refreshErr);
+        }
+      } else {
+        // No refresh token available! clear session and redirect
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+        }
+        throw new Error("Session expired. Please log in again.");
+      }
+    }
+
     console.error(`apiFetch FAILED: ${API_URL}${endpoint} Status: ${res.status}`);
     let errorMessage = text || "API request failed";
     try {
