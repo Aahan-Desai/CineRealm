@@ -11,14 +11,15 @@ export async function apiFetch(
 
   const isFormData = options.body instanceof FormData;
 
-  console.log(`apiFetch calling: ${API_URL}${endpoint}`);
+  const headers = {
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...options.headers,
+  };
+
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-    headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
+    headers,
   });
 
   const text = await res.text();

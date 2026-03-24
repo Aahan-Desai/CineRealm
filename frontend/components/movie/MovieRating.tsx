@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import StarRating from "./StarRating";
 import { useAuthStore } from "@/store/authStore";
+import { apiFetch } from "@/lib/api";
 
 export default function MovieRating({
   movieId,
@@ -39,15 +40,10 @@ export default function MovieRating({
     try {
       setUserRating(value); 
 
-      const res = await fetch("/ratings", {
+      const newRating = await apiFetch("/ratings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ movieId, rating: value }),
       });
-
-      const newRating = await res.json();
 
       setAllRatings((prev: any) => {
         const filtered = prev.filter(

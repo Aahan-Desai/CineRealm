@@ -40,6 +40,7 @@ export const uploadImage = async (req: Request, res: Response) => {
       url: result.secure_url
     })
   } catch (error) {
+    console.error("UPLOAD CONTROLLER ERROR:", error)
     res.status(500).json({ message: "Upload failed" })
   }
 }

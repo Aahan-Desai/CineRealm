@@ -1,3 +1,5 @@
+"use client"
+
 import { Scene } from "@/types/scene"
 import { apiFetch } from "./api"
 
@@ -9,7 +11,12 @@ export const createScene = async (data: {
 
   return apiFetch("/scenes", {
     method: "POST",
-    body: JSON.stringify(data)
+    body: JSON.stringify({
+      ...data,
+      scriptText: "",
+      sceneOrder: 1
+    })
+
   })
 }
 

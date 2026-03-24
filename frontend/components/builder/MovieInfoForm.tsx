@@ -124,32 +124,34 @@ export default function MovieInfoForm({
       </div>
 
       {/* Poster Upload */}
-      <PosterUpload onUpload={setPosterUrl} />
+      <PosterUpload currentUrl={posterUrl} onUpload={setPosterUrl} />
 
-      {posterUrl && (
-        <img
-          src={posterUrl}
-          className="w-32 rounded-lg mt-2"
-        />
-      )}
+      {/* Backdrop Upload */}
+      <BackdropUpload currentUrl={backdropUrl} onUpload={setBackdropUrl} />
 
-      {/* Backdrop Upload 🔥 */}
-      <BackdropUpload onUpload={setBackdropUrl} />
-
-      {backdropUrl && (
-        <img
-          src={backdropUrl}
-          className="w-full h-40 object-cover rounded-lg mt-2"
-        />
-      )}
-
-      {/* Save Button */}
-      <button
-        onClick={handleSave}
-        className="bg-black text-white px-6 py-2 rounded-lg"
-      >
-        Save Changes
-      </button>
+      <div className="pt-8 border-t border-white/5">
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className={`
+            w-full py-4 rounded-xl font-bold transition-all duration-300
+            flex items-center justify-center gap-2
+            ${loading
+              ? "bg-white/5 text-white/40 cursor-not-allowed border border-white/5"
+              : "bg-[#E5484D] text-white hover:bg-[#B7393D] hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-red-500/20"
+            }
+          `}
+        >
+          {loading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              <span>Saving Changes...</span>
+            </>
+          ) : (
+            "Save Changes"
+          )}
+        </button>
+      </div>
 
     </div>
   );

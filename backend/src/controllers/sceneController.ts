@@ -29,7 +29,7 @@ export const createScene = async (req: AuthRequest, res: Response) => {
       orderBy: { sceneOrder: "desc" }
     })
 
-    const nextOrder = lastScene ? lastScene.sceneOrder + 1 : 1
+    const nextOrder = (lastScene?.sceneOrder ?? 0) + 1
 
     const scene = await prisma.scene.create({
       data: {
