@@ -1,11 +1,10 @@
 import { Request, Response } from "express"
 import prisma from "../config/prisma.js"
-import { Genre, Visibility, CreationType } from "@prisma/client"
+import { Visibility, CreationType } from "@prisma/client"
 import { AuthRequest } from "../middleware/authMiddleware.js"
 import { generateUniqueSlug } from "../utils/generateSlug.js"
 import { similarity } from "../services/plagiarismService.js"
 
-const validGenres = Object.values(Genre)
 
 export const createMovie = async (req: AuthRequest, res: Response) => {
   try {
@@ -20,14 +19,9 @@ export const createMovie = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: "Missing title" })
     }
 
-    let normalizedGenre: Genre | undefined = undefined
-    if (genre) {
-      normalizedGenre = (genre as string).toUpperCase() as Genre
-      if (!validGenres.includes(normalizedGenre)) {
-        return res.status(400).json({
-          message: `Invalid genre. Must be one of: ${validGenres.join(", ")}`
-        })
-      }
+    let normalizedGenre: string | undefined = undefined
+    if (genre && typeof genre === "string") {
+      normalizedGenre = genre.trim()
     }
 
     const slug = await generateUniqueSlug(title)
@@ -435,10 +429,12 @@ export const updateMovie = async (req: AuthRequest, res: Response) => {
       where: { id },
       data: {
         title,
+        genre: typeof req.body.genre === "string" ? req.body.genre.trim() : undefined,
         synopsis,
         runtime,
         visibility: normalizedVisibility,
-        posterUrl
+        posterUrl,
+        backdropUrl: req.body.backdropUrl
       }
     })
 

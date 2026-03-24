@@ -20,7 +20,15 @@ export default function MovieInfoForm({
 }) {
 
   const [title, setTitle] = useState(movie.title)
-  const [genre, setGenre] = useState(movie.genre || "")
+  const predefinedGenres = ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "History", "Horror", "Musical", "Mystery", "Romance", "Sci-Fi", "Sport", "Thriller"];
+  const [genreSelect, setGenreSelect] = useState(() => {
+    if (!movie.genre) return "";
+    return predefinedGenres.includes(movie.genre) ? movie.genre : "Other";
+  });
+  const [customGenre, setCustomGenre] = useState(() => {
+    if (!movie.genre) return "";
+    return predefinedGenres.includes(movie.genre) ? "" : movie.genre;
+  });
   const [runtime, setRuntime] = useState<number | "">(movie.runtime || "")
   const [synopsis, setSynopsis] = useState(movie.synopsis || "")
 
@@ -34,9 +42,11 @@ export default function MovieInfoForm({
 
       setLoading(true)
 
+      const finalGenre = genreSelect === "Other" ? customGenre : genreSelect;
+
       const updated = await updateMovie(movie.id, {
         title,
-        genre,
+        genre: finalGenre,
         runtime: runtime || undefined,
         synopsis,
         posterUrl,
@@ -69,11 +79,26 @@ export default function MovieInfoForm({
       {/* Genre */}
       <div>
         <label className="text-sm font-medium">Genre</label>
-        <input
-          className="w-full border rounded-md p-2 mt-1"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-        />
+        <select
+          className="w-full flex h-10 border rounded-md border-input bg-background p-2 mt-1 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          value={genreSelect}
+          onChange={(e) => setGenreSelect(e.target.value)}
+        >
+          <option value="" disabled>Select a genre...</option>
+          {predefinedGenres.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+          <option value="Other">Other (Custom)</option>
+        </select>
+
+        {genreSelect === "Other" && (
+          <input
+            className="w-full flex h-10 border rounded-md border-input bg-background px-3 py-2 mt-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Type your custom genre..."
+            value={customGenre}
+            onChange={(e) => setCustomGenre(e.target.value)}
+          />
+        )}
       </div>
 
       {/* Runtime */}

@@ -30,7 +30,7 @@ model Movie {
   id           String      @id @default(cuid())
   title        String
   slug         String      @unique
-  genre        Genre?
+  genre        String?
   runtime      Int?
   synopsis     String?
   posterUrl    String?
@@ -126,19 +126,6 @@ model Like {
 enum Visibility {
   PUBLIC
   PRIVATE
-}
-
-enum Genre {
-  ACTION
-  DRAMA
-  COMEDY
-  HORROR
-  SCI_FI
-  FANTASY
-  THRILLER
-  ROMANCE
-  MYSTERY
-  ADVENTURE
 }
 
 enum CreationType {
