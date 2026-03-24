@@ -52,9 +52,9 @@ model Scene {
   id         String           @id @default(cuid())
   title      String
   location   String?
-  scriptText String
+  scriptText String?
   actNumber  Int
-  sceneOrder Int
+  sceneOrder Int?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   movieId    String
