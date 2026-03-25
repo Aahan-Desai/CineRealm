@@ -5,7 +5,11 @@ async function main() {
     console.log('Status Code:', res.status)
     console.log('API Response:', json)
   } catch (err) {
-    console.error('Fetch error:', err.message)
+    if (err instanceof Error) {
+      console.error('Fetch error:', err.message)
+    } else {
+      console.error('Fetch error:', String(err))
+    }
   }
 }
 

@@ -62,6 +62,8 @@ model Scene {
   movieId    String
   movie      Movie            @relation(fields: [movieId], references: [id])
   characters SceneCharacter[]
+  blocks     SceneBlock[]
+  choices    Choice[]
 }
 
 model Character {
@@ -75,6 +77,29 @@ model Character {
   movieId   String
   movie     Movie            @relation(fields: [movieId], references: [id])
   scenes    SceneCharacter[]
+  blocks    SceneBlock[]
+}
+
+model SceneBlock {
+  id          String     @id @default(cuid())
+  type        BlockType
+  content     String
+  sceneId     String
+  characterId String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  character   Character? @relation(fields: [characterId], references: [id])
+  scene       Scene      @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+}
+
+model Choice {
+  id          String   @id @default(cuid())
+  text        String
+  outcomeText String
+  sceneId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  scene       Scene    @relation(fields: [sceneId], references: [id], onDelete: Cascade)
 }
 
 model SceneCharacter {
@@ -136,6 +161,11 @@ enum Visibility {
 enum CreationType {
   FULL
   SIMPLE
+}
+
+enum BlockType {
+  DIALOGUE
+  ACTION
 }
 
 model Feedback {

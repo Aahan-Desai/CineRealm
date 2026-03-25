@@ -1,7 +1,87 @@
 import { Response } from "express"
 import prisma from "../config/prisma.js"
 import { AuthRequest } from "../middleware/authMiddleware.js"
+import { BlockType, Prisma } from "@prisma/client"
 
+const isMissingSceneBlockTable = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === "P2021" &&
+  String((error.meta as { table?: unknown } | undefined)?.table || "").includes("SceneBlock")
+
+const isMissingChoiceTable = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === "P2021" &&
+  String((error.meta as { table?: unknown } | undefined)?.table || "").includes("Choice")
+
+const buildSceneInclude = ({
+  includeBlocks,
+  includeChoices
+}: {
+  includeBlocks: boolean
+  includeChoices: boolean
+}) => ({
+  ...(includeChoices
+    ? {
+        choices: {
+          orderBy: {
+            createdAt: "asc" as const
+          }
+        }
+      }
+    : {}),
+  ...(includeBlocks
+    ? {
+        blocks: {
+          include: {
+            character: true
+          },
+          orderBy: {
+            createdAt: "asc" as const
+          }
+        }
+      }
+    : {}),
+  characters: {
+    include: { character: true }
+  }
+})
+
+const getSceneWithRelations = async (id: string) => {
+  try {
+    return await prisma.scene.findUnique({
+      where: { id },
+      include: buildSceneInclude({
+        includeBlocks: true,
+        includeChoices: true
+      })
+    })
+  } catch (error) {
+    const missingBlocks = isMissingSceneBlockTable(error)
+    const missingChoices = isMissingChoiceTable(error)
+
+    if (!missingBlocks && !missingChoices) {
+      throw error
+    }
+
+    const fallbackScene = await prisma.scene.findUnique({
+      where: { id },
+      include: buildSceneInclude({
+        includeBlocks: !missingBlocks,
+        includeChoices: !missingChoices
+      })
+    })
+
+    if (!fallbackScene) {
+      return null
+    }
+
+    return {
+      ...fallbackScene,
+      blocks: "blocks" in fallbackScene ? fallbackScene.blocks : [],
+      choices: "choices" in fallbackScene ? fallbackScene.choices : []
+    }
+  }
+}
 
 
 export const createScene = async (req: AuthRequest, res: Response) => {
@@ -54,7 +134,7 @@ export const updateScene = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.params.id as string
 
-    const { title, location, scriptText, mood, characterIds } = req.body
+    const { title, location, scriptText, mood, characterIds, blocks, choices } = req.body
     const actNumber = req.body.actNumber ? parseInt(req.body.actNumber) : undefined
     const sceneOrder = req.body.sceneOrder ? parseInt(req.body.sceneOrder) : undefined
 
@@ -83,6 +163,82 @@ export const updateScene = async (req: AuthRequest, res: Response) => {
       }
     })
 
+    if (Array.isArray(blocks)) {
+      try {
+        await prisma.sceneBlock.deleteMany({
+          where: { sceneId: id }
+        })
+
+        const normalizedBlocks: Prisma.SceneBlockCreateManyInput[] = blocks
+          .filter(
+            (
+              block: { content?: unknown }
+            ): block is { content: string; type?: unknown; characterId?: unknown } =>
+              typeof block?.content === "string"
+          )
+          .map(block => ({
+            type:
+              String(block.type).toUpperCase() === "DIALOGUE"
+                ? BlockType.DIALOGUE
+                : BlockType.ACTION,
+            content: block.content.trim(),
+            sceneId: id,
+            characterId:
+              typeof block.characterId === "string" && block.characterId
+                ? block.characterId
+                : null
+          }))
+          .filter(block => block.content.length > 0)
+
+        if (normalizedBlocks.length > 0) {
+          await prisma.sceneBlock.createMany({
+            data: normalizedBlocks
+          })
+        }
+      } catch (error) {
+        if (!isMissingSceneBlockTable(error)) {
+          throw error
+        }
+
+        console.warn("SceneBlock table is not available yet. Skipping block persistence.")
+      }
+    }
+
+    if (Array.isArray(choices)) {
+      try {
+        await prisma.choice.deleteMany({
+          where: { sceneId: id }
+        })
+
+        const normalizedChoices: Prisma.ChoiceCreateManyInput[] = choices
+          .filter(
+            (
+              choice: { text?: unknown; outcomeText?: unknown }
+            ): choice is { text: string; outcomeText: string } =>
+              typeof choice?.text === "string" &&
+              typeof choice?.outcomeText === "string"
+          )
+          .map(choice => ({
+            text: choice.text.trim(),
+            outcomeText: choice.outcomeText.trim(),
+            sceneId: id
+          }))
+          .filter(choice => choice.text.length > 0 && choice.outcomeText.length > 0)
+
+        if (normalizedChoices.length > 0) {
+          await prisma.choice.createMany({
+            data: normalizedChoices
+          })
+        }
+      } catch (error) {
+        if (!isMissingChoiceTable(error)) {
+          throw error
+        }
+
+        console.warn("Choice table is not available yet. Skipping choice persistence.")
+      }
+    }
+
     if (Array.isArray(characterIds)) {
       await prisma.sceneCharacter.deleteMany({
         where: { sceneId: id }
@@ -98,14 +254,7 @@ export const updateScene = async (req: AuthRequest, res: Response) => {
       }
     }
 
-    const updatedScene = await prisma.scene.findUnique({
-      where: { id },
-      include: {
-        characters: {
-          include: { character: true }
-        }
-      }
-    })
+    const updatedScene = await getSceneWithRelations(id)
 
     res.json(updatedScene)
 

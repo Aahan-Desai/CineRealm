@@ -5,6 +5,96 @@ import { AuthRequest } from "../middleware/authMiddleware.js"
 import { generateUniqueSlug } from "../utils/generateSlug.js"
 import { similarity } from "../services/plagiarismService.js"
 
+const isMissingSceneBlockTable = (error: unknown) =>
+  error instanceof Error &&
+  "code" in error &&
+  (error as { code?: string }).code === "P2021" &&
+  String((error as { meta?: { table?: unknown } }).meta?.table || "").includes("SceneBlock")
+
+const isMissingChoiceTable = (error: unknown) =>
+  error instanceof Error &&
+  "code" in error &&
+  (error as { code?: string }).code === "P2021" &&
+  String((error as { meta?: { table?: unknown } }).meta?.table || "").includes("Choice")
+
+const buildStudioSceneInclude = ({
+  includeBlocks,
+  includeChoices
+}: {
+  includeBlocks: boolean
+  includeChoices: boolean
+}) => ({
+  orderBy: [
+    { actNumber: "asc" as const },
+    { sceneOrder: "asc" as const }
+  ],
+  include: {
+    ...(includeChoices
+      ? {
+          choices: {
+            orderBy: {
+              createdAt: "asc" as const
+            }
+          }
+        }
+      : {}),
+    ...(includeBlocks
+      ? {
+          blocks: {
+            include: {
+              character: true
+            },
+            orderBy: {
+              createdAt: "asc" as const
+            }
+          }
+        }
+      : {}),
+    characters: {
+      include: {
+        character: true
+      }
+    }
+  }
+})
+
+const legacyStudioSceneInclude = {
+  orderBy: [
+    { actNumber: "asc" as const },
+    { sceneOrder: "asc" as const }
+  ],
+  include: {
+    characters: {
+      include: {
+        character: true
+      }
+    }
+  }
+}
+
+const mapSceneResponse = (scene: any) => ({
+  id: scene.id,
+  title: scene.title,
+  location: scene.location,
+  actNumber: scene.actNumber,
+  sceneOrder: scene.sceneOrder,
+  scriptText: scene.scriptText,
+  mood: scene.mood,
+  choices: (scene.choices || []).map((choice: any) => ({
+    id: choice.id,
+    text: choice.text,
+    outcomeText: choice.outcomeText
+  })),
+  blocks: (scene.blocks || []).map((block: any) => ({
+    id: block.id,
+    type: block.type,
+    content: block.content,
+    characterId: block.characterId,
+    character: block.character
+  })),
+  characters: scene.characters.map((sc: any) => sc.character)
+})
+
 
 export const createMovie = async (req: AuthRequest, res: Response) => {
   try {
@@ -139,25 +229,52 @@ export const getMovieStudio = async (req: AuthRequest, res: Response) => {
     const id = req.params.id as string
     const userId = req.userId
 
-    const movie = await prisma.movie.findUnique({
-      where: { id },
-      include: {
-        characters: true,
-        scenes: {
-          orderBy: [
-            { actNumber: "asc" },
-            { sceneOrder: "asc" }
-          ],
-          include: {
-            characters: {
-              include: {
-                character: true
-              }
-            }
-          }
+    let movie
+
+    try {
+      movie = await prisma.movie.findUnique({
+        where: { id },
+        include: {
+          characters: true,
+          scenes: buildStudioSceneInclude({
+            includeBlocks: true,
+            includeChoices: true
+          })
+        }
+      })
+    } catch (error) {
+      const missingBlocks = isMissingSceneBlockTable(error)
+      const missingChoices = isMissingChoiceTable(error)
+
+      if (!missingBlocks && !missingChoices) {
+        throw error
+      }
+
+      movie = await prisma.movie.findUnique({
+        where: { id },
+        include: {
+          characters: true,
+          scenes:
+            !missingBlocks || !missingChoices
+              ? buildStudioSceneInclude({
+                  includeBlocks: !missingBlocks,
+                  includeChoices: !missingChoices
+                })
+              : legacyStudioSceneInclude
+        }
+      })
+
+      if (movie) {
+        movie = {
+          ...movie,
+          scenes: movie.scenes.map(scene => ({
+            ...scene,
+            blocks: "blocks" in scene ? scene.blocks : [],
+            choices: "choices" in scene ? scene.choices : []
+          }))
         }
       }
-    })
+    }
 
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" })
@@ -179,44 +296,90 @@ export const getFullMovie = async (req: AuthRequest, res: Response) => {
     const slug = req.params.slug as string
     const userId = req.userId
 
-    const movie = await prisma.movie.findUnique({
-      where: { slug },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-            avatarUrl: true
-          }
-        },
-        characters: true,
-        scenes: {
-          orderBy: [
-            { actNumber: "asc" },
-            { sceneOrder: "asc" }
-          ],
-          include: {
-            characters: {
-              include: {
-                character: true
+    let movie
+
+    try {
+      movie = await prisma.movie.findUnique({
+        where: { slug },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              username: true,
+              avatarUrl: true
+            }
+          },
+          characters: true,
+          scenes: buildStudioSceneInclude({
+            includeBlocks: true,
+            includeChoices: true
+          }),
+          ratings: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  avatarUrl: true
+                }
               }
             }
-          }
-        },
-        ratings: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                avatarUrl: true
-              }
-            }
-          }
-        },
-        likes: true
+          },
+          likes: true
+        }
+      })
+    } catch (error) {
+      const missingBlocks = isMissingSceneBlockTable(error)
+      const missingChoices = isMissingChoiceTable(error)
+
+      if (!missingBlocks && !missingChoices) {
+        throw error
       }
-    })
+
+      movie = await prisma.movie.findUnique({
+        where: { slug },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              username: true,
+              avatarUrl: true
+            }
+          },
+          characters: true,
+          scenes:
+            !missingBlocks || !missingChoices
+              ? buildStudioSceneInclude({
+                  includeBlocks: !missingBlocks,
+                  includeChoices: !missingChoices
+                })
+              : legacyStudioSceneInclude,
+          ratings: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  avatarUrl: true
+                }
+              }
+            }
+          },
+          likes: true
+        }
+      })
+
+      if (movie) {
+        movie = {
+          ...movie,
+          scenes: movie.scenes.map(scene => ({
+            ...scene,
+            blocks: "blocks" in scene ? scene.blocks : [],
+            choices: "choices" in scene ? scene.choices : []
+          }))
+        }
+      }
+    }
 
     if (!movie) {
       return res.status(404).json({ message: "Movie not found" })
@@ -255,15 +418,7 @@ export const getFullMovie = async (req: AuthRequest, res: Response) => {
         averageRating
       },
       characters: movie.characters,
-      scenes: movie.scenes.map(scene => ({
-        id: scene.id,
-        title: scene.title,
-        location: scene.location,
-        actNumber: scene.actNumber,
-        sceneOrder: scene.sceneOrder,
-        scriptText: scene.scriptText,
-        characters: scene.characters.map(sc => sc.character)
-      })),
+      scenes: movie.scenes.map(mapSceneResponse),
       ratings: movie.ratings,
       likeCount: movie.likes.length,
       isLiked
