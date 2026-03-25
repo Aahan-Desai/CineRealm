@@ -5,7 +5,7 @@ import MovieCharacters from "@/components/movie/MovieCharacters";
 import MovieRating from "@/components/movie/MovieRating";
 import MovieLikeButton from "@/components/movie/MovieLikeButton";
 import { MovieFullResponse } from "@/types/movieFull";
-import MovieActs from "@/components/movie/MovieActs";
+import MovieStoryViewer from "@/components/movie/MovieStoryViewer";
 
 export default async function MoviePage({ 
   params 
@@ -44,7 +44,7 @@ export default async function MoviePage({
 
             {/* 4. STORY STRUCTURE (ACTS & SCENES) */}
             <section className="animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-600">
-              <MovieActs scenes={data.scenes} />
+              <MovieStoryViewer scenes={data.scenes} />
             </section>
           </>
         )}
