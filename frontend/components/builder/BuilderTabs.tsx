@@ -93,6 +93,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             movieId={movieState.id}
             actNumber={1}
             scenes={scenes.filter((scene) => scene.actNumber === 1)}
+            characters={characters}
             onCreate={handleSceneCreate}
             onDelete={handleSceneDelete}
           />
@@ -101,6 +102,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             movieId={movieState.id}
             actNumber={2}
             scenes={scenes.filter((scene) => scene.actNumber === 2)}
+            characters={characters}
             onCreate={handleSceneCreate}
             onDelete={handleSceneDelete}
           />
@@ -109,6 +111,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             movieId={movieState.id}
             actNumber={3}
             scenes={scenes.filter((scene) => scene.actNumber === 3)}
+            characters={characters}
             onCreate={handleSceneCreate}
             onDelete={handleSceneDelete}
           />

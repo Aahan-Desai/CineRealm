@@ -54,7 +54,7 @@ export const updateScene = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.params.id as string
 
-    const { title, location, scriptText } = req.body
+    const { title, location, scriptText, mood, characterIds } = req.body
     const actNumber = req.body.actNumber ? parseInt(req.body.actNumber) : undefined
     const sceneOrder = req.body.sceneOrder ? parseInt(req.body.sceneOrder) : undefined
 
@@ -71,20 +71,46 @@ export const updateScene = async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ message: "Not authorized" })
     }
 
-    const updatedScene = await prisma.scene.update({
+    await prisma.scene.update({
       where: { id },
       data: {
         title,
         location,
         scriptText,
         actNumber,
-        sceneOrder
+        sceneOrder,
+        mood
+      }
+    })
+
+    if (Array.isArray(characterIds)) {
+      await prisma.sceneCharacter.deleteMany({
+        where: { sceneId: id }
+      })
+
+      if (characterIds.length > 0) {
+        await prisma.sceneCharacter.createMany({
+          data: characterIds.map((cid: string) => ({
+            sceneId: id,
+            characterId: cid
+          }))
+        })
+      }
+    }
+
+    const updatedScene = await prisma.scene.findUnique({
+      where: { id },
+      include: {
+        characters: {
+          include: { character: true }
+        }
       }
     })
 
     res.json(updatedScene)
 
   } catch (error) {
+    console.error("UPDATE SCENE ERROR:", error)
     res.status(500).json({ message: "Failed to update scene" })
   }
 }

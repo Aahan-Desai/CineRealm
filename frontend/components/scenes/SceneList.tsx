@@ -1,11 +1,14 @@
 import { Scene } from "@/types/scene"
+import { Character } from "@/types/character"
 import SceneCard from "./SceneCard"
 
 export default function SceneList({
   scenes,
+  characters,
   onDelete
 }: {
   scenes: Scene[]
+  characters: Character[]
   onDelete: (id: string) => void
 }) {
 
@@ -20,6 +23,7 @@ export default function SceneList({
         <SceneCard
           key={scene.id}
           scene={scene}
+          characters={characters}
           onDelete={onDelete}
         />
       ))}

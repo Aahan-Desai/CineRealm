@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
@@ -53,6 +54,7 @@ model Scene {
   title      String
   location   String?
   scriptText String?
+  mood       String?
   actNumber  Int
   sceneOrder Int?
   createdAt  DateTime         @default(now())
@@ -67,6 +69,9 @@ model Character {
   name      String
   actorName String?
   avatarUrl String?
+  role      String?
+  traits    String?
+  shortBio  String?
   movieId   String
   movie     Movie            @relation(fields: [movieId], references: [id])
   scenes    SceneCharacter[]

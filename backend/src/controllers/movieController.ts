@@ -243,11 +243,14 @@ export const getFullMovie = async (req: AuthRequest, res: Response) => {
       movie: {
         id: movie.id,
         title: movie.title,
+        slug: movie.slug,
         genre: movie.genre,
         runtime: movie.runtime,
         synopsis: movie.synopsis,
         posterUrl: movie.posterUrl,
         backdropUrl: movie.backdropUrl,
+        creationType: movie.creationType,
+        isPublished: movie.isPublished,
         creator: movie.creator,
         averageRating
       },

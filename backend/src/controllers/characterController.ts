@@ -4,7 +4,7 @@ import { AuthRequest } from "../middleware/authMiddleware.js"
 
 export const createCharacter = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, actorName, avatarUrl, movieId } = req.body
+    const { name, actorName, avatarUrl, role, traits, shortBio, movieId } = req.body
     const userId = req.userId
 
     const movie = await prisma.movie.findUnique({
@@ -24,6 +24,9 @@ export const createCharacter = async (req: AuthRequest, res: Response) => {
         name,
         actorName,
         avatarUrl,
+        role,
+        traits,
+        shortBio,
         movieId
       }
     })

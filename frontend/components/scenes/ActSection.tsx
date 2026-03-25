@@ -1,4 +1,5 @@
 import { Scene } from "@/types/scene"
+import { Character } from "@/types/character"
 import SceneForm from "./SceneForm"
 import SceneList from "./SceneList"
 
@@ -6,12 +7,14 @@ export default function ActSection({
   movieId,
   actNumber,
   scenes,
+  characters,
   onCreate,
   onDelete
 }: {
   movieId: string
   actNumber: number
   scenes: Scene[]
+  characters: Character[]
   onCreate: (scene: Scene) => void
   onDelete: (id: string) => void
 }) {
@@ -31,6 +34,7 @@ export default function ActSection({
 
       <SceneList
         scenes={scenes}
+        characters={characters}
         onDelete={onDelete}
       />
 
