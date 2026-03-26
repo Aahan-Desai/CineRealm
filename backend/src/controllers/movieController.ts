@@ -4,6 +4,7 @@ import { Visibility, CreationType } from "@prisma/client"
 import { AuthRequest } from "../middleware/authMiddleware.js"
 import { generateUniqueSlug } from "../utils/generateSlug.js"
 import { similarity } from "../services/plagiarismService.js"
+import { randomUUID } from "node:crypto"
 
 const isMissingSceneBlockTable = (error: unknown) =>
   error instanceof Error &&
@@ -427,6 +428,106 @@ export const getFullMovie = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error("Fetch full movie error:", error)
     res.status(500).json({ message: "Failed to fetch movie screenplay" })
+  }
+}
+
+export const saveMovieProgress = async (req: AuthRequest, res: Response) => {
+  try {
+    const movieId = req.params.id as string
+    const userId = req.userId
+    const sceneId = typeof req.body.sceneId === "string" ? req.body.sceneId.trim() : ""
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    if (!sceneId) {
+      return res.status(400).json({ message: "sceneId is required" })
+    }
+
+    const movie = await prisma.movie.findUnique({
+      where: { id: movieId },
+      select: { id: true }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    const scene = await prisma.scene.findFirst({
+      where: {
+        id: sceneId,
+        movieId
+      },
+      select: {
+        id: true
+      }
+    })
+
+    if (!scene) {
+      return res.status(404).json({ message: "Scene not found for this movie" })
+    }
+
+    await prisma.$executeRaw`
+      INSERT INTO "MovieProgress" ("id", "userId", "movieId", "sceneId", "updatedAt")
+      VALUES (${randomUUID()}, ${userId}, ${movieId}, ${sceneId}, NOW())
+      ON CONFLICT ("userId", "movieId")
+      DO UPDATE SET
+        "sceneId" = EXCLUDED."sceneId",
+        "updatedAt" = NOW()
+    `
+
+    const [progress] = await prisma.$queryRaw<Array<{ sceneId: string; updatedAt: Date }>>`
+      SELECT "sceneId", "updatedAt"
+      FROM "MovieProgress"
+      WHERE "userId" = ${userId} AND "movieId" = ${movieId}
+      LIMIT 1
+    `
+
+    res.json({
+      movieId,
+      sceneId: progress?.sceneId ?? sceneId,
+      updatedAt: progress?.updatedAt ?? new Date()
+    })
+  } catch (error) {
+    console.error("SAVE MOVIE PROGRESS ERROR:", error)
+    res.status(500).json({ message: "Failed to save movie progress" })
+  }
+}
+
+export const getMovieProgress = async (req: AuthRequest, res: Response) => {
+  try {
+    const movieId = req.params.id as string
+    const userId = req.userId
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    const movie = await prisma.movie.findUnique({
+      where: { id: movieId },
+      select: { id: true }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    const [progress] = await prisma.$queryRaw<Array<{ sceneId: string; updatedAt: Date }>>`
+      SELECT "sceneId", "updatedAt"
+      FROM "MovieProgress"
+      WHERE "userId" = ${userId} AND "movieId" = ${movieId}
+      LIMIT 1
+    `
+
+    res.json({
+      movieId,
+      sceneId: progress?.sceneId ?? null,
+      updatedAt: progress?.updatedAt ?? null
+    })
+  } catch (error) {
+    console.error("GET MOVIE PROGRESS ERROR:", error)
+    res.status(500).json({ message: "Failed to load movie progress" })
   }
 }
 

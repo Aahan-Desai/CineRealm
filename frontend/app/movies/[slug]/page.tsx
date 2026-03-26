@@ -44,7 +44,7 @@ export default async function MoviePage({
 
             {/* 4. STORY STRUCTURE (ACTS & SCENES) */}
             <section className="animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-600">
-              <MovieStoryViewer scenes={data.scenes} />
+              <MovieStoryViewer movieId={data.movie.id} scenes={data.scenes} />
             </section>
           </>
         )}

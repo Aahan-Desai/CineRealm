@@ -67,6 +67,28 @@ export const getMovieFull = async (
   };
 };
 
+export type MovieProgressResponse = {
+  movieId: string
+  sceneId: string | null
+  updatedAt: string | null
+}
+
+export const getMovieProgress = async (
+  movieId: string
+): Promise<MovieProgressResponse> => {
+  return apiFetch(`/movies/${movieId}/progress`)
+}
+
+export const saveMovieProgress = async (
+  movieId: string,
+  sceneId: string
+): Promise<MovieProgressResponse> => {
+  return apiFetch(`/movies/${movieId}/progress`, {
+    method: "POST",
+    body: JSON.stringify({ sceneId })
+  })
+}
+
 type MovieFullResponse = {
   movie: Movie
   scenes: Scene[]

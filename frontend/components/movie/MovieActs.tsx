@@ -10,12 +10,18 @@ export default function MovieActs({
   progressiveReveal = false,
   maxUnlockedAct = 3,
   onUnlockNextAct,
+  activeSceneId,
+  targetScene,
+  onSceneVisible,
 }: {
   scenes: Scene[]
   viewMode?: StoryViewMode
   progressiveReveal?: boolean
   maxUnlockedAct?: number
   onUnlockNextAct?: () => void
+  activeSceneId?: string | null
+  targetScene?: { sceneId: string; token: number } | null
+  onSceneVisible?: (sceneId: string) => void
 }) {
   if (!scenes?.length) return null;
 
@@ -64,7 +70,13 @@ export default function MovieActs({
                 ) : null}
               </div>
             ) : (
-              <MovieScenes scenes={actScenes} viewMode={viewMode} />
+              <MovieScenes
+                scenes={actScenes}
+                viewMode={viewMode}
+                activeSceneId={activeSceneId}
+                targetScene={targetScene}
+                onSceneVisible={onSceneVisible}
+              />
             )}
           </div>
         );

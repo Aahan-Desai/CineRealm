@@ -86,8 +86,14 @@ function normalizeBlocks(scene: Scene): SceneBlock[] {
 
 export default function MovieCinematicPlayer({
   scenes,
+  initialSceneId,
+  initialSceneToken,
+  onActiveSceneChange,
 }: {
   scenes: Scene[];
+  initialSceneId?: string | null;
+  initialSceneToken?: number;
+  onActiveSceneChange?: (sceneId: string) => void;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [typewriterEnabled, setTypewriterEnabled] = useState(false);
@@ -96,8 +102,23 @@ export default function MovieCinematicPlayer({
     setActiveIndex((prev) => Math.min(prev, Math.max(scenes.length - 1, 0)));
   }, [scenes]);
 
+  useEffect(() => {
+    if (!initialSceneId) return;
+
+    const nextIndex = scenes.findIndex((scene) => scene.id === initialSceneId);
+    if (nextIndex >= 0) {
+      setActiveIndex(nextIndex);
+    }
+  }, [initialSceneId, initialSceneToken, scenes]);
+
   const currentScene = scenes[activeIndex];
   const sceneBlocks = useMemo(() => (currentScene ? normalizeBlocks(currentScene) : []), [currentScene]);
+
+  useEffect(() => {
+    if (currentScene?.id) {
+      onActiveSceneChange?.(currentScene.id);
+    }
+  }, [currentScene?.id, onActiveSceneChange]);
 
   if (!currentScene) {
     return (

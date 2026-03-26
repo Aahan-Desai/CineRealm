@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Scene } from "@/types/scene";
 import { StoryViewMode } from "./MovieStoryViewer";
@@ -86,13 +86,37 @@ const blockVariants = {
 export default function MovieScenes({
   scenes,
   viewMode = "standard",
+  activeSceneId,
+  targetScene,
+  onSceneVisible,
 }: {
   scenes: Scene[];
   viewMode?: StoryViewMode;
+  activeSceneId?: string | null;
+  targetScene?: { sceneId: string; token: number } | null;
+  onSceneVisible?: (sceneId: string) => void;
 }) {
   if (!scenes?.length) return null;
 
   const [selectedOutcomes, setSelectedOutcomes] = useState<Record<string, string>>({});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!targetScene || !containerRef.current) return;
+
+    const targetElement = containerRef.current.querySelector<HTMLElement>(
+      `[data-scene-id="${targetScene.sceneId}"]`
+    );
+
+    if (!targetElement) return;
+
+    window.setTimeout(() => {
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 120);
+  }, [targetScene]);
 
   const revealOutcome = (sceneId: string, choiceId: string, outcomeText: string) => {
     setSelectedOutcomes((prev) => ({
@@ -102,26 +126,35 @@ export default function MovieScenes({
   };
 
   return (
-    <div className="space-y-8">
+    <div ref={containerRef} className="space-y-8">
       {scenes.map((scene, idx) => {
         const moodKey = scene.mood?.toLowerCase() || "";
         const moodStyle = moodStyles[moodKey];
         const isCinematic = viewMode === "cinematic";
+        const isActiveScene = activeSceneId === scene.id;
 
         return (
           <motion.div
             key={scene.id}
+            data-scene-id={scene.id}
             variants={sceneVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             whileHover={{ y: -2, scale: 1.01 }}
+            onViewportEnter={() => onSceneVisible?.(scene.id)}
             className={`group relative overflow-hidden rounded-[28px] p-4 md:p-5 transition-all duration-300 ease-in-out ${
               moodStyle
-                ? `border ${moodStyle.shell} ${moodStyle.glow}`
+                ? `border ${moodStyle.shell} ${moodStyle.glow} ${
+                    isActiveScene ? "ring-1 ring-[#ffb3b5]/50" : ""
+                  }`
                 : isCinematic
-                  ? "border border-white/12 bg-[linear-gradient(145deg,rgba(17,17,20,0.96),rgba(9,10,14,0.92))] shadow-[0_18px_45px_rgba(0,0,0,0.3)]"
-                  : "border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] hover:border-white/15 hover:shadow-[0_14px_36px_rgba(0,0,0,0.24)]"
+                  ? `border border-white/12 bg-[linear-gradient(145deg,rgba(17,17,20,0.96),rgba(9,10,14,0.92))] shadow-[0_18px_45px_rgba(0,0,0,0.3)] ${
+                      isActiveScene ? "ring-1 ring-[#ffb3b5]/50" : ""
+                    }`
+                  : `border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] hover:border-white/15 hover:shadow-[0_14px_36px_rgba(0,0,0,0.24)] ${
+                      isActiveScene ? "ring-1 ring-white/20 border-white/20" : ""
+                    }`
             }`}
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.05),transparent_38%)] opacity-70" />
