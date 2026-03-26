@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Scene } from "@/types/scene";
 import { StoryViewMode } from "./MovieStoryViewer";
 import { getCharacterAccent } from "@/lib/utils/characterAccent";
+import SceneReactionBar from "./SceneReactionBar";
 
 const moodStyles: Record<
   string,
@@ -60,12 +61,6 @@ const moodStyles: Record<
   },
 };
 
-const reactionOptions = [
-  { id: "fire", label: "Fire", icon: "Fire" },
-  { id: "shock", label: "Shock", icon: "Shock" },
-  { id: "heart", label: "Heart", icon: "Heart" },
-];
-
 const sceneVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
@@ -98,19 +93,11 @@ export default function MovieScenes({
   if (!scenes?.length) return null;
 
   const [selectedOutcomes, setSelectedOutcomes] = useState<Record<string, string>>({});
-  const [sceneReactions, setSceneReactions] = useState<Record<string, string>>({});
 
   const revealOutcome = (sceneId: string, choiceId: string, outcomeText: string) => {
     setSelectedOutcomes((prev) => ({
       ...prev,
       [`${sceneId}:${choiceId}`]: outcomeText,
-    }));
-  };
-
-  const reactToScene = (sceneId: string, reactionId: string) => {
-    setSceneReactions((prev) => ({
-      ...prev,
-      [sceneId]: prev[sceneId] === reactionId ? "" : reactionId,
     }));
   };
 
@@ -120,7 +107,6 @@ export default function MovieScenes({
         const moodKey = scene.mood?.toLowerCase() || "";
         const moodStyle = moodStyles[moodKey];
         const isCinematic = viewMode === "cinematic";
-        const selectedReaction = sceneReactions[scene.id];
 
         return (
           <motion.div
@@ -357,34 +343,7 @@ export default function MovieScenes({
                   </div>
                 ) : null}
 
-                <div className="space-y-3 pt-1">
-                  <div className="flex items-center gap-3">
-                    <div className="h-1.5 w-1.5 rounded-full bg-white/30" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/55">
-                      Scene Reactions
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-3">
-                    {reactionOptions.map((option) => {
-                      const isActive = selectedReaction === option.id;
-                      return (
-                        <button
-                          key={option.id}
-                          type="button"
-                          onClick={() => reactToScene(scene.id, option.id)}
-                          className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ease-in-out hover:brightness-110 active:scale-95 ${
-                            isActive
-                              ? "border-[#E5484D]/40 bg-[#E5484D]/15 text-[#ffb3b5]"
-                              : "border-white/10 bg-white/5 text-white/75 hover:bg-white/10"
-                          }`}
-                        >
-                          {option.icon}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                <SceneReactionBar sceneId={scene.id} cinematic={isCinematic} />
               </div>
             </div>
           </motion.div>

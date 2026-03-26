@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Scene, SceneBlock } from "@/types/scene";
 import { getCharacterAccent } from "@/lib/utils/characterAccent";
+import SceneReactionBar from "./SceneReactionBar";
 
 function TypewriterText({
   text,
@@ -254,6 +255,10 @@ export default function MovieCinematicPlayer({
                     );
                   })()
                 ))}
+              </div>
+
+              <div className="border-t border-white/10 pt-2">
+                <SceneReactionBar sceneId={currentScene.id} cinematic />
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">

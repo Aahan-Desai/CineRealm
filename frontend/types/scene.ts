@@ -1,5 +1,13 @@
 import { Character } from "./character"
 
+export type SceneReactionType = "like" | "wow" | "fire" | "sad" | "funny"
+
+export interface SceneReactionSummary {
+  sceneId: string
+  counts: Record<SceneReactionType, number>
+  userReactions: SceneReactionType[]
+}
+
 export interface Choice {
   id: string
   text: string

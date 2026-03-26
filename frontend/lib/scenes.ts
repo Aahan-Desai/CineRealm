@@ -1,6 +1,6 @@
 "use client"
 
-import { Scene } from "@/types/scene"
+import { Scene, SceneReactionSummary, SceneReactionType } from "@/types/scene"
 import { apiFetch } from "./api"
 
 export const createScene = async (data: {
@@ -35,5 +35,21 @@ export const deleteScene = async (sceneId: string) => {
 
   return apiFetch(`/scenes/${sceneId}`, {
     method: "DELETE"
+  })
+}
+
+export const getSceneReactions = async (
+  sceneId: string
+): Promise<SceneReactionSummary> => {
+  return apiFetch(`/scenes/${sceneId}/reactions`)
+}
+
+export const reactToScene = async (
+  sceneId: string,
+  type: SceneReactionType
+): Promise<Pick<SceneReactionSummary, "sceneId" | "counts"> & { reacted: boolean }> => {
+  return apiFetch(`/scenes/${sceneId}/react`, {
+    method: "POST",
+    body: JSON.stringify({ type })
   })
 }

@@ -23,6 +23,7 @@ model User {
   likes         Like[]
   movies        Movie[]
   ratings       Rating[]
+  sceneReactions SceneReaction[]
   refreshTokens RefreshToken[]
   feedback      Feedback[]
 }
@@ -64,6 +65,7 @@ model Scene {
   characters SceneCharacter[]
   blocks     SceneBlock[]
   choices    Choice[]
+  reactions  SceneReaction[]
 }
 
 model Character {
@@ -151,6 +153,18 @@ model Like {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
+}
+
+model SceneReaction {
+  id        String   @id @default(cuid())
+  sceneId    String
+  userId     String
+  type       String
+  createdAt  DateTime @default(now())
+  scene      Scene    @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sceneId, userId, type])
 }
 
 enum Visibility {
