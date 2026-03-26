@@ -57,7 +57,7 @@ export default function MovieActs({
                   <button
                     type="button"
                     onClick={onUnlockNextAct}
-                    className="rounded-full bg-white text-black px-5 py-3 text-sm font-semibold hover:bg-white/90 transition-colors"
+                    className="rounded-full bg-white text-black px-5 py-3 text-sm font-semibold hover:bg-white/90 transition-all duration-300 ease-in-out hover:brightness-105 active:scale-95"
                   >
                     Unlock Act {act}
                   </button>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import MovieActs from "./MovieActs";
+import MovieCinematicPlayer from "./MovieCinematicPlayer";
 import { Scene } from "@/types/scene";
 
 export type StoryViewMode = "standard" | "cinematic";
@@ -53,7 +54,7 @@ export default function MovieStoryViewer({ scenes }: { scenes: Scene[] }) {
             <button
               type="button"
               onClick={() => setViewMode("standard")}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ease-in-out hover:brightness-105 active:scale-95 ${
                 viewMode === "standard"
                   ? "bg-white text-black"
                   : "text-white/70 hover:text-white"
@@ -64,7 +65,7 @@ export default function MovieStoryViewer({ scenes }: { scenes: Scene[] }) {
             <button
               type="button"
               onClick={() => setViewMode("cinematic")}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ease-in-out hover:brightness-105 active:scale-95 ${
                 viewMode === "cinematic"
                   ? "bg-[#E5484D] text-white"
                   : "text-white/70 hover:text-white"
@@ -87,7 +88,7 @@ export default function MovieStoryViewer({ scenes }: { scenes: Scene[] }) {
             <button
               type="button"
               onClick={handleProgressiveToggle}
-              className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ease-in-out hover:brightness-105 active:scale-95 ${
                 progressiveReveal
                   ? "border-[#E5484D]/35 bg-[#E5484D]/15 text-[#ffb3b5]"
                   : "border-white/10 bg-white/5 text-white/75 hover:bg-white/10"
@@ -100,7 +101,7 @@ export default function MovieStoryViewer({ scenes }: { scenes: Scene[] }) {
               <button
                 type="button"
                 onClick={handleUnlockNextAct}
-                className="rounded-full bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-white/90 transition-colors"
+                className="rounded-full bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-white/90 transition-all duration-300 ease-in-out hover:brightness-105 active:scale-95"
               >
                 Unlock Next Act
               </button>
@@ -109,13 +110,19 @@ export default function MovieStoryViewer({ scenes }: { scenes: Scene[] }) {
         </div>
       </div>
 
-      <MovieActs
-        scenes={scenes}
-        viewMode={viewMode}
-        progressiveReveal={progressiveReveal}
-        maxUnlockedAct={progressiveReveal ? maxUnlockedAct : highestAct}
-        onUnlockNextAct={handleUnlockNextAct}
-      />
+      {viewMode === "cinematic" ? (
+        <MovieCinematicPlayer
+          scenes={scenes.filter((scene) => scene.actNumber <= (progressiveReveal ? maxUnlockedAct : highestAct))}
+        />
+      ) : (
+        <MovieActs
+          scenes={scenes}
+          viewMode={viewMode}
+          progressiveReveal={progressiveReveal}
+          maxUnlockedAct={progressiveReveal ? maxUnlockedAct : highestAct}
+          onUnlockNextAct={handleUnlockNextAct}
+        />
+      )}
     </div>
   );
 }
