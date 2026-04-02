@@ -2,9 +2,13 @@ import { Character } from "@/types/character"
 import CharacterCard from "./CharacterCard"
 
 export default function CharacterList({
-  characters
+  characters,
+  onUpdate,
+  onDelete,
 }: {
   characters: Character[]
+  onUpdate: (character: Character) => void
+  onDelete: (characterId: string) => void
 }) {
 
   if (!characters || characters.length === 0) {
@@ -22,6 +26,8 @@ export default function CharacterList({
         <CharacterCard
           key={character.id}
           character={character}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
         />
       ))}
 

@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 import { updateScene, deleteScene } from "@/lib/scenes"
 
@@ -12,12 +13,15 @@ import { Character } from "@/types/character"
 export default function SceneCard({
   scene,
   characters,
+  onUpdate,
   onDelete
 }: {
   scene: Scene
   characters: Character[]
+  onUpdate: (scene: Scene) => void
   onDelete: (id: string) => void
 }) {
+  const [title, setTitle] = useState(scene.title || "")
   const [scriptText, setScriptText] = useState(scene.scriptText || "")
   const [mood, setMood] = useState(scene.mood || "")
   const [blocks, setBlocks] = useState<SceneBlock[]>(scene.blocks || [])
@@ -36,16 +40,31 @@ export default function SceneCard({
   )
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    setTitle(scene.title || "")
+    setScriptText(scene.scriptText || "")
+    setMood(scene.mood || "")
+    setBlocks(scene.blocks || [])
+    setChoices(scene.choices || [])
+    setSelectedCharacterIds(
+      (scene.characters || []).map((entry: Character | { character: Character }) =>
+        "character" in entry ? entry.character.id : entry.id
+      )
+    )
+  }, [scene])
+
   const handleSave = async () => {
     try {
       setLoading(true)
-      await updateScene(scene.id, {
+      const updatedScene = await updateScene(scene.id, {
+        title: title.trim() || scene.title,
         scriptText,
         mood: mood || undefined,
         characterIds: selectedCharacterIds,
         ...(blocksDirty ? { blocks } : {}),
         ...(choicesDirty ? { choices } : {})
       })
+      onUpdate(updatedScene)
       setIsEditing(false)
       setBlocksDirty(false)
       setChoicesDirty(false)
@@ -150,7 +169,7 @@ export default function SceneCard({
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <p className="font-bold text-lg text-white/90">
-            {scene.title}
+            {title}
           </p>
           <p className="text-xs text-white/45">
             {scriptText?.trim() || blocks.length > 0 || choices.length > 0
@@ -171,6 +190,13 @@ export default function SceneCard({
 
       {isEditing ? (
         <>
+          <Input
+            placeholder="Scene title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="bg-black/50 border-white/10 text-white placeholder:text-white/35 focus-visible:ring-1 focus-visible:ring-[#E5484D]"
+          />
+
           <div className="flex items-center justify-end">
             <select
               className="h-9 rounded-md border border-white/10 bg-black/50 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#E5484D] transition-colors appearance-none"

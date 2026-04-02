@@ -38,8 +38,28 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
     setScenes((prev) => prev.filter((scene) => scene.id !== id));
   };
 
+  const handleSceneUpdate = (updatedScene: Scene) => {
+    setScenes((prev) =>
+      prev.map((scene) => (scene.id === updatedScene.id ? updatedScene : scene))
+    );
+  };
+
   const handleCharacterCreate = (character: Character) => {
     setCharacters((prev) => [...prev, character]);
+  };
+
+  const handleCharacterUpdate = (updatedCharacter: Character) => {
+    setCharacters((prev) =>
+      prev.map((character) =>
+        character.id === updatedCharacter.id ? updatedCharacter : character
+      )
+    );
+  };
+
+  const handleCharacterDelete = (characterId: string) => {
+    setCharacters((prev) =>
+      prev.filter((character) => character.id !== characterId)
+    );
   };
 
   const handleUpdate = (updatedMovie: Movie) => {
@@ -81,7 +101,11 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             onCreate={handleCharacterCreate}
           />
 
-          <CharacterList characters={characters} />
+          <CharacterList
+            characters={characters}
+            onUpdate={handleCharacterUpdate}
+            onDelete={handleCharacterDelete}
+          />
         </div>
       </TabsContent>
 
@@ -95,6 +119,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             scenes={scenes.filter((scene) => scene.actNumber === 1)}
             characters={characters}
             onCreate={handleSceneCreate}
+            onUpdate={handleSceneUpdate}
             onDelete={handleSceneDelete}
           />
 
@@ -104,6 +129,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             scenes={scenes.filter((scene) => scene.actNumber === 2)}
             characters={characters}
             onCreate={handleSceneCreate}
+            onUpdate={handleSceneUpdate}
             onDelete={handleSceneDelete}
           />
 
@@ -113,6 +139,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
             scenes={scenes.filter((scene) => scene.actNumber === 3)}
             characters={characters}
             onCreate={handleSceneCreate}
+            onUpdate={handleSceneUpdate}
             onDelete={handleSceneDelete}
           />
         </div>

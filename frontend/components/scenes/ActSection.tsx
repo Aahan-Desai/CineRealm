@@ -9,6 +9,7 @@ export default function ActSection({
   scenes,
   characters,
   onCreate,
+  onUpdate,
   onDelete
 }: {
   movieId: string
@@ -16,6 +17,7 @@ export default function ActSection({
   scenes: Scene[]
   characters: Character[]
   onCreate: (scene: Scene) => void
+  onUpdate: (scene: Scene) => void
   onDelete: (id: string) => void
 }) {
 
@@ -35,6 +37,7 @@ export default function ActSection({
       <SceneList
         scenes={scenes}
         characters={characters}
+        onUpdate={onUpdate}
         onDelete={onDelete}
       />
 
