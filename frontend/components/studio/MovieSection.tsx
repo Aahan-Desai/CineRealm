@@ -11,9 +11,11 @@ type Movie = {
 export default function MovieSection({
   title,
   movies,
+  onDelete,
 }: {
   title: string
   movies: Movie[]
+  onDelete: (movieId: string) => void
 }) {
   if (!movies || movies.length === 0) return null
 
@@ -26,7 +28,7 @@ export default function MovieSection({
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie.id} movie={movie} onDelete={onDelete} />
         ))}
       </div>
 

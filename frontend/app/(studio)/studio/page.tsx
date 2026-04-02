@@ -33,6 +33,14 @@ export default function StudioPage() {
     fetchMovies()
   }, [])
 
+  const handleDeleteMovie = (movieId: string) => {
+    setMovies((current) => ({
+      drafts: current.drafts.filter((movie) => movie.id !== movieId),
+      private: current.private.filter((movie) => movie.id !== movieId),
+      published: current.published.filter((movie) => movie.id !== movieId),
+    }))
+  }
+
   if (loading) {
     return <p>Loading movies...</p>
   }
@@ -51,16 +59,19 @@ export default function StudioPage() {
       <MovieSection
         title="Drafts"
         movies={movies.drafts}
+        onDelete={handleDeleteMovie}
       />
 
       <MovieSection
         title="Private Movies"
         movies={movies.private}
+        onDelete={handleDeleteMovie}
       />
 
       <MovieSection
         title="Published Movies"
         movies={movies.published}
+        onDelete={handleDeleteMovie}
       />
 
     </div>

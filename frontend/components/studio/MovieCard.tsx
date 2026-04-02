@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { likeMovie, unlikeMovie } from "@/lib/likes";
+import { deleteMovie } from "@/lib/movies";
 import Link from "next/link";
 
 type Movie = {
@@ -15,10 +16,17 @@ type Movie = {
   likeCount?: number;
 };
 
-export default function MovieCard({ movie }: { movie: Movie }) {
+export default function MovieCard({
+  movie,
+  onDelete,
+}: {
+  movie: Movie
+  onDelete: (movieId: string) => void
+}) {
   const [liked, setLiked] = useState(movie.isLiked || false);
   const [count, setCount] = useState(movie.likeCount || 0);
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (loading) return;
@@ -44,6 +52,28 @@ export default function MovieCard({ movie }: { movie: Movie }) {
       setLoading(false);
     }
   };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (deleting) return;
+
+    const confirmed = window.confirm(`Delete "${movie.title}"? This cannot be undone.`);
+    if (!confirmed) return;
+
+    try {
+      setDeleting(true);
+      await deleteMovie(movie.id);
+      onDelete(movie.id);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete movie");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <Link
       href={`/studio/${movie.id}`}
@@ -64,7 +94,17 @@ export default function MovieCard({ movie }: { movie: Movie }) {
       </div>
 
       <div className="p-3 space-y-1">
-        <h3 className="font-semibold">{movie.title}</h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold">{movie.title}</h3>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting}
+            className="shrink-0 rounded-full border border-red-500/25 bg-red-500/10 px-2.5 py-1 text-[11px] font-semibold text-red-300 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {deleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
         <button
           onClick={handleLike}
           className="flex items-center gap-2 text-sm"

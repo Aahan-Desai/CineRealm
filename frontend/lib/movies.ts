@@ -43,6 +43,12 @@ export const publishMovie = async (movieId: string) => {
   })
 }
 
+export const deleteMovie = async (movieId: string) => {
+  return apiFetch(`/movies/${movieId}`, {
+    method: "DELETE"
+  })
+}
+
 export const getExploreMovies = async () => {
   const data = await apiFetch("/movies/explore");
   return data.movies;

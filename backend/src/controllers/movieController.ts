@@ -707,3 +707,82 @@ export const updateMovie = async (req: AuthRequest, res: Response) => {
   }
 }
 
+export const deleteMovie = async (req: AuthRequest, res: Response) => {
+  try {
+    const id = req.params.id as string
+    const userId = req.userId
+
+    const movie = await prisma.movie.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        creatorId: true
+      }
+    })
+
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" })
+    }
+
+    if (movie.creatorId !== userId) {
+      return res.status(403).json({ message: "Not authorized" })
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const scenes = await tx.scene.findMany({
+        where: { movieId: id },
+        select: { id: true }
+      })
+
+      const sceneIds = scenes.map((scene) => scene.id)
+
+      await tx.movieProgress.deleteMany({
+        where: { movieId: id }
+      })
+
+      await tx.rating.deleteMany({
+        where: { movieId: id }
+      })
+
+      await tx.like.deleteMany({
+        where: { movieId: id }
+      })
+
+      if (sceneIds.length > 0) {
+        await tx.sceneCharacter.deleteMany({
+          where: {
+            sceneId: {
+              in: sceneIds
+            }
+          }
+        })
+
+        await tx.sceneReaction.deleteMany({
+          where: {
+            sceneId: {
+              in: sceneIds
+            }
+          }
+        })
+      }
+
+      await tx.character.deleteMany({
+        where: { movieId: id }
+      })
+
+      await tx.scene.deleteMany({
+        where: { movieId: id }
+      })
+
+      await tx.movie.delete({
+        where: { id }
+      })
+    })
+
+    res.status(204).send()
+  } catch (error) {
+    console.error("Delete movie error:", error)
+    res.status(500).json({ message: "Failed to delete movie" })
+  }
+}
+
