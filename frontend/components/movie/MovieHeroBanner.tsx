@@ -17,6 +17,8 @@ export default function MovieHeroBanner({
   ratings,
 }: Props) {
   const user = useAuthStore((s) => s.user);
+  const heroImage = movie.backdropUrl || movie.posterUrl || null;
+  const posterImage = movie.posterUrl || null;
 
   const { avg, count } = useMemo(() => {
     if (!ratings.length) return { avg: 0, count: 0 };
@@ -42,11 +44,13 @@ export default function MovieHeroBanner({
         transition={{ duration: 2, ease: "easeOut" }}
         className="absolute inset-0"
       >
-        <img
-          src={movie.backdropUrl || movie.posterUrl}
-          alt={movie.title}
-          className="w-full h-full object-cover brightness-[0.25]"
-        />
+        {heroImage && (
+          <img
+            src={heroImage}
+            alt={movie.title}
+            className="w-full h-full object-cover brightness-[0.25]"
+          />
+        )}
         <div className="absolute inset-0 bg-linear-to-t from-[#070809] via-[#070809]/40 to-transparent" />
         <div className="absolute inset-0 bg-linear-to-r from-[#070809] via-[#070809]/20 to-transparent" />
       </motion.div>
@@ -62,11 +66,17 @@ export default function MovieHeroBanner({
             className="hidden md:block group relative"
           >
             <div className="aspect-2/3 rounded-[32px] overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.8)] border border-white/10">
-              <img 
-                src={movie.posterUrl} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                alt={`${movie.title} Poster`}
-              />
+              {posterImage ? (
+                <img 
+                  src={posterImage} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  alt={`${movie.title} Poster`}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center bg-white/5 text-sm font-medium text-muted-foreground">
+                  Poster coming soon
+                </div>
+              )}
             </div>
             <div className="absolute -inset-1 rounded-[33px] bg-linear-to-tr from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur" />
           </motion.div>

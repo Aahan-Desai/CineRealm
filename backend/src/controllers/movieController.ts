@@ -215,7 +215,10 @@ export const publishMovie = async (req: AuthRequest, res: Response) => {
 
     const updatedMovie = await prisma.movie.update({
       where: { id },
-      data: { isPublished: true }
+      data: {
+        isPublished: true,
+        visibility: Visibility.PUBLIC
+      }
     })
 
     res.json(updatedMovie)

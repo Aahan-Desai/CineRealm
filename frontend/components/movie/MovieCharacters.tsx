@@ -14,7 +14,7 @@ export default function MovieCharacters({ characters }: { characters: Character[
         {characters.map((char) => (
           <div
             key={char.id}
-            className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-5 md:p-6 transition-all hover:bg-white/[0.05]"
+            className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/0.03 p-5 md:p-6 transition-all hover:bg-white/0.05"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(229,72,77,0.12),transparent_35%)] opacity-0 group-hover:opacity-100 transition-opacity" />
 

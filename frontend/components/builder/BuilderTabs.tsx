@@ -70,6 +70,7 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
     setMovieState((prev) => ({
       ...prev,
       isPublished: true,
+      visibility: "PUBLIC",
     }));
   };
 
@@ -158,6 +159,8 @@ export default function BuilderTabs({ movie }: { movie: Movie }) {
 
           <PublishMovieButton
             movieId={movieState.id}
+            movieSlug={movieState.slug}
+            visibility={movieState.visibility}
             isPublished={movieState.isPublished}
             onPublish={handlePublish}
           />

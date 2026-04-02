@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Scene, SceneBlock } from "@/types/scene";
 import { getCharacterAccent } from "@/lib/utils/characterAccent";
@@ -97,6 +97,7 @@ export default function MovieCinematicPlayer({
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [typewriterEnabled, setTypewriterEnabled] = useState(false);
+  const sceneCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setActiveIndex((prev) => Math.min(prev, Math.max(scenes.length - 1, 0)));
@@ -119,6 +120,15 @@ export default function MovieCinematicPlayer({
       onActiveSceneChange?.(currentScene.id);
     }
   }, [currentScene?.id, onActiveSceneChange]);
+
+  useEffect(() => {
+    if (!currentScene?.id || !sceneCardRef.current) return;
+
+    sceneCardRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [currentScene?.id]);
 
   if (!currentScene) {
     return (
@@ -172,6 +182,7 @@ export default function MovieCinematicPlayer({
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScene.id}
+            ref={sceneCardRef}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -14 }}

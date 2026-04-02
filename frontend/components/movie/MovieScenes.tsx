@@ -83,6 +83,10 @@ const blockVariants = {
   }),
 };
 
+function hasScriptText(scene: Scene) {
+  return typeof scene.scriptText === "string" && scene.scriptText.trim().length > 0;
+}
+
 export default function MovieScenes({
   scenes,
   viewMode = "standard",
@@ -132,6 +136,7 @@ export default function MovieScenes({
         const moodStyle = moodStyles[moodKey];
         const isCinematic = viewMode === "cinematic";
         const isActiveScene = activeSceneId === scene.id;
+        const showScriptPassage = hasScriptText(scene);
 
         return (
           <motion.div
@@ -206,6 +211,34 @@ export default function MovieScenes({
 
                 {scene.blocks?.length ? (
                   <div className="space-y-3">
+                    {showScriptPassage ? (
+                      <div
+                        className={`rounded-[24px] border p-4 md:p-5 transition-all duration-300 ease-in-out ${
+                          isCinematic
+                            ? `${moodStyle?.panel || "border-white/12 bg-[linear-gradient(135deg,rgba(229,72,77,0.1),rgba(255,255,255,0.03))]"}`
+                            : "border-white/6 bg-black/20"
+                        }`}
+                      >
+                        {isCinematic ? (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="h-px w-10 bg-[#ff8d90]/60" />
+                              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#ffb3b5]/80">
+                                Cinematic Passage
+                              </span>
+                            </div>
+                            <p className="whitespace-pre-wrap text-lg md:text-[1.45rem] leading-[1.9] tracking-[0.01em] text-foreground/90">
+                              {scene.scriptText}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap text-sm md:text-base leading-7 text-foreground/72">
+                            {scene.scriptText}
+                          </p>
+                        )}
+                      </div>
+                    ) : null}
+
                     {scene.blocks.map((block, blockIndex) => (
                       (() => {
                         const speakerName = block.character?.name || "Unknown Voice";

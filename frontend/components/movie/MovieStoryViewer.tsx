@@ -157,8 +157,12 @@ export default function MovieStoryViewer({
     };
   }, [activeSceneId, movieId, resumeLoaded, sceneLookup]);
 
-  const visibleScenes = scenes.filter(
-    (scene) => scene.actNumber <= (progressiveReveal ? maxUnlockedAct : highestAct)
+  const visibleScenes = useMemo(
+    () =>
+      scenes.filter(
+        (scene) => scene.actNumber <= (progressiveReveal ? maxUnlockedAct : highestAct)
+      ),
+    [scenes, progressiveReveal, maxUnlockedAct, highestAct]
   );
 
   return (

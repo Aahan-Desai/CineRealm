@@ -13,6 +13,7 @@ export interface Movie {
   runtime?: number
   synopsis?: string
   posterUrl?: string
+  visibility?: string
   isPublished: boolean
   createdAt: string
   characters?: Character[]
