@@ -3,6 +3,8 @@ import ExploreMovieCard from "@/components/discover/ExploreMovieCard";
 import ExploreHeader from "@/components/discover/ExploreHeader";
 import { Movie } from "@/types/movie";
 
+export const dynamic = "force-dynamic";
+
 export default async function ExplorePage() {
   const movies = await getExploreMovies();
 
