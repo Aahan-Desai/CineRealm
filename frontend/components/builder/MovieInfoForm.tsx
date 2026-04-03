@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Movie } from "@/types/movie"
 import { updateMovie } from "@/lib/movies"
 
@@ -36,6 +36,14 @@ export default function MovieInfoForm({
   const [backdropUrl, setBackdropUrl] = useState(movie.backdropUrl || "");
 
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setPosterUrl(movie.posterUrl || "");
+  }, [movie.posterUrl]);
+
+  useEffect(() => {
+    setBackdropUrl(movie.backdropUrl || "");
+  }, [movie.backdropUrl]);
 
   const handleSave = async () => {
     try {
