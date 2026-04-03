@@ -7,6 +7,8 @@ import MovieLikeButton from "@/components/movie/MovieLikeButton";
 import { MovieFullResponse } from "@/types/movieFull";
 import MovieStoryViewer from "@/components/movie/MovieStoryViewer";
 
+export const dynamic = "force-dynamic";
+
 export default async function MoviePage({ 
   params 
 }: { 
