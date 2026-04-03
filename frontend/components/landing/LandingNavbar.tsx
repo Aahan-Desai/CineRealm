@@ -20,7 +20,13 @@ export default function LandingNavbar() {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <Link href="/" className="nav-logo">
-        CineRealm
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/icon.png"
+          alt="CineRealm logo"
+          className="nav-logo-image"
+        />
+        <span>CineRealm</span>
       </Link>
 
       <div className="nav-actions">

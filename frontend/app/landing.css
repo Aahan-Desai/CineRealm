@@ -50,6 +50,9 @@
 }
 
 .nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
   font-size: 1.35rem;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -58,6 +61,15 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
+}
+
+.nav-logo-image {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.7rem;
+  object-fit: cover;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  flex-shrink: 0;
 }
 
 .nav-actions {

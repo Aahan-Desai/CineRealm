@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   title: "CineRealm — Direct Your Story",
   description:
     "CineRealm is the cinematic storytelling platform where you create movies, write scenes, define characters, and publish your world.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
