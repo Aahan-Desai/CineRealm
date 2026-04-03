@@ -1,13 +1,18 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-if (!API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not configured.");
+function getApiUrl() {
+  if (!API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not configured.");
+  }
+
+  return API_URL;
 }
 
 export async function apiFetch(
   endpoint: string,
   options: RequestInit = {}
 ) {
+  const apiUrl = getApiUrl();
   const token =
     typeof window !== "undefined"
       ? localStorage.getItem("token")
@@ -21,7 +26,7 @@ export async function apiFetch(
     ...options.headers,
   };
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(`${apiUrl}${endpoint}`, {
     ...options,
     headers,
   });
@@ -33,7 +38,7 @@ export async function apiFetch(
       const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
         try {
-          const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
+          const refreshRes = await fetch(`${apiUrl}/auth/refresh`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refreshToken }),
@@ -71,7 +76,7 @@ export async function apiFetch(
       }
     }
 
-    console.error(`apiFetch FAILED: ${API_URL}${endpoint} Status: ${res.status}`);
+    console.error(`apiFetch FAILED: ${apiUrl}${endpoint} Status: ${res.status}`);
     let errorMessage = text || "API request failed";
     try {
       const errorData = JSON.parse(text);
