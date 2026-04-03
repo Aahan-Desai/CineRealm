@@ -1,10 +1,10 @@
-# CineRealm 🎬
+# CineRealm 
 
 **CineRealm** is an interactive, social platform built for storytellers, screenwriters, and movie enthusiasts. It empowers users to create their own movies, script detailed scenes, define character traits, draft dialogue or action blocks, and even set up branching interactive choices. Users can also discover other creators, rate and react to scenes, follow their favorite writers, and curate an immersive movie feed.
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
 - **User Authentication & Profiles:** Secure email/password login using JWT. Users can upload avatars and cover photos, manage a bio, and maintain a unique profile.
 - **Movie Creation Engine:** Write entirely interactive movies with custom backdrops, posters, and privacy settings (Public vs. Private).
@@ -15,7 +15,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **Framework:** Next.js 16 (App Router)
@@ -39,7 +39,7 @@
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 cinerealm/
@@ -62,7 +62,7 @@ cinerealm/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -130,7 +130,7 @@ Access the web app at `http://localhost:3000`.
 
 ---
 
-## 🔐 API Overview
+##  API Overview
 
 Major API routing structure handled by the backend:
 - `POST /api/auth/register` - Register a new user
@@ -145,6 +145,6 @@ Major API routing structure handled by the backend:
 
 ---
 
-## 📝 License
+##  License
 
 This project is licensed under the [ISC License](LICENSE).
