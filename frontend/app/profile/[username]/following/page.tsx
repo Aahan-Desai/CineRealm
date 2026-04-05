@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation"
+import { getApiUrl } from "@/lib/api"
 
 async function getFollowing(username: string) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/${username}/following`
+    `${getApiUrl()}/users/${username}/following`
   )
 
   if (!res.ok) return null

@@ -1,11 +1,13 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.trim();
 
-function getApiUrl() {
+export function getApiUrl() {
   if (!API_URL) {
-    throw new Error("NEXT_PUBLIC_API_URL is not configured.");
+    throw new Error(
+      "App configuration is incomplete. Set NEXT_PUBLIC_API_URL for the frontend deployment."
+    );
   }
 
-  return API_URL;
+  return API_URL.replace(/\/+$/, "");
 }
 
 export async function apiFetch(

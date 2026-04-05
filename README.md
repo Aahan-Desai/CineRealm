@@ -119,8 +119,14 @@ cd frontend
 npm install
 ```
 
-**Configure the API:**
-Ensure your `lib/api.ts` base API URL is properly pointed to your backend environment variable or standard port configurations during local development (`http://localhost:5000/api`).
+**Set up environment variables:**
+Create a `.env.local` file in the `frontend/` directory:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+For production deployments such as Vercel, add the same `NEXT_PUBLIC_API_URL` value in the project environment variables and point it at your deployed backend origin.
 
 **Run Frontend Development Environment:**
 ```bash
