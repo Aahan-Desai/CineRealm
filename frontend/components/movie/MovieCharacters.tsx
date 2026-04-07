@@ -1,4 +1,5 @@
 import { Character } from "@/types/character";
+import CharacterAvatar from "@/components/characters/CharacterAvatar";
 
 export default function MovieCharacters({ characters }: { characters: Character[] }) {
   if (!characters?.length) return null;
@@ -19,13 +20,16 @@ export default function MovieCharacters({ characters }: { characters: Character[
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(229,72,77,0.12),transparent_35%)] opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <div className="relative z-10 flex gap-5">
-              <div className="w-24 h-32 md:w-28 md:h-36 shrink-0 rounded-[22px] overflow-hidden border border-white/10 bg-black/20">
-                <img
-                  src={char.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${char.name}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  alt={char.name}
-                />
-              </div>
+              <CharacterAvatar
+                name={char.name}
+                avatarUrl={char.avatarUrl}
+                role={char.role}
+                seed={char.id || char.name}
+                shape="poster"
+                showRoleBadge
+                className="h-32 w-24 shrink-0 md:h-36 md:w-28"
+                imageClassName="group-hover:scale-105 transition-transform duration-700"
+              />
 
               <div className="min-w-0 flex-1 space-y-3">
                 <div className="space-y-1">

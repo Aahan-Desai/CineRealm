@@ -6,6 +6,7 @@ import { Scene } from "@/types/scene";
 import { StoryViewMode } from "./MovieStoryViewer";
 import { getCharacterAccent } from "@/lib/utils/characterAccent";
 import SceneReactionBar from "./SceneReactionBar";
+import CharacterAvatar from "@/components/characters/CharacterAvatar";
 
 const moodStyles: Record<
   string,
@@ -272,17 +273,14 @@ export default function MovieScenes({
                         {block.type === "DIALOGUE" ? (
                           <div className="space-y-3">
                             <div className="flex items-start gap-3">
-                              {block.character?.avatarUrl ? (
-                                <img
-                                  src={block.character.avatarUrl}
-                                  alt={speakerName}
-                                  className="mt-0.5 h-8 w-8 shrink-0 rounded-full border border-white/10 object-cover"
-                                />
-                              ) : (
-                                <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-black uppercase ${speakerAccent.avatar}`}>
-                                  {speakerName.slice(0, 1)}
-                                </div>
-                              )}
+                              <CharacterAvatar
+                                name={speakerName}
+                                avatarUrl={block.character?.avatarUrl}
+                                role={block.character?.role}
+                                seed={block.character?.id || speakerName}
+                                className="mt-0.5 h-8 w-8 shrink-0"
+                                initialsClassName="text-[11px]"
+                              />
                               <div className="min-w-0 space-y-2">
                                 <p
                                   className={`text-[11px] font-black uppercase tracking-[0.28em] ${speakerAccent.name}`}

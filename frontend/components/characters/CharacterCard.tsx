@@ -6,6 +6,7 @@ import { deleteCharacter, updateCharacter } from "@/lib/characters"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import AvatarUpload from "./AvatarUpload"
+import CharacterAvatar from "./CharacterAvatar"
 
 export default function CharacterCard({
   character,
@@ -160,17 +161,14 @@ export default function CharacterCard({
 
   return (
     <div className="border rounded-xl p-5 flex gap-5 bg-[#12141A]/50 border-white/5 shadow-xs transition-colors hover:bg-[#1A1D26]">
-      {character.avatarUrl ? (
-        <img
-          src={character.avatarUrl}
-          alt={character.name}
-          className="w-14 h-14 rounded-full object-cover shrink-0 shadow-md"
-        />
-      ) : (
-        <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg font-black shrink-0 shadow-inner text-white/40">
-          ?
-        </div>
-      )}
+      <CharacterAvatar
+        name={character.name}
+        avatarUrl={character.avatarUrl}
+        role={character.role}
+        seed={character.id || character.name}
+        className="h-14 w-14 shrink-0 shadow-md"
+        initialsClassName="text-base"
+      />
 
       <div className="flex flex-col w-full gap-1">
         <div className="flex flex-wrap justify-between items-start gap-3">
