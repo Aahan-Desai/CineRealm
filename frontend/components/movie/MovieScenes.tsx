@@ -60,6 +60,41 @@ const moodStyles: Record<
     panel: "bg-orange-950/20 border-orange-300/20",
     glow: "shadow-[0_0_0_1px_rgba(251,146,60,0.1),0_18px_45px_rgba(56,24,8,0.3)]",
   },
+  emotional: {
+    shell: "border-rose-400/25 bg-[linear-gradient(145deg,rgba(45,12,20,0.96),rgba(28,8,12,0.9))]",
+    chip: "border-rose-300/30 bg-rose-400/10 text-rose-200",
+    label: "Emotional",
+    panel: "bg-rose-950/20 border-rose-300/20",
+    glow: "shadow-[0_0_0_1px_rgba(244,63,94,0.1),0_18px_45px_rgba(68,10,21,0.28)]",
+  },
+  bittersweet: {
+    shell: "border-amber-400/20 bg-[linear-gradient(145deg,rgba(30,20,40,0.96),rgba(20,15,30,0.9))]",
+    chip: "border-amber-300/30 bg-amber-400/10 text-amber-200",
+    label: "Bittersweet",
+    panel: "bg-indigo-950/20 border-amber-300/20",
+    glow: "shadow-[0_0_0_1px_rgba(251,191,36,0.1),0_18px_45px_rgba(28,15,45,0.3)]",
+  },
+  revelation: {
+    shell: "border-yellow-400/25 bg-[linear-gradient(145deg,rgba(40,35,10,0.96),rgba(25,22,5,0.9))]",
+    chip: "border-yellow-300/30 bg-yellow-400/10 text-yellow-200",
+    label: "Revelation",
+    panel: "bg-yellow-950/20 border-yellow-300/20",
+    glow: "shadow-[0_0_0_1px_rgba(250,204,21,0.12),0_18px_45px_rgba(50,45,10,0.3)]",
+  },
+  philosophical: {
+    shell: "border-emerald-400/20 bg-[linear-gradient(145deg,rgba(10,35,30,0.96),rgba(5,25,22,0.9))]",
+    chip: "border-emerald-300/30 bg-emerald-400/10 text-emerald-200",
+    label: "Philosophical",
+    panel: "bg-emerald-950/20 border-emerald-300/20",
+    glow: "shadow-[0_0_0_1px_rgba(52,211,153,0.1),0_18px_45px_rgba(10,40,35,0.28)]",
+  },
+  dreamlike: {
+    shell: "border-purple-400/20 bg-[linear-gradient(145deg,rgba(25,15,45,0.96),rgba(15,10,30,0.9))]",
+    chip: "border-purple-300/30 bg-purple-400/10 text-purple-200",
+    label: "Dreamlike",
+    panel: "bg-purple-950/20 border-purple-300/20",
+    glow: "shadow-[0_0_0_1px_rgba(192,132,252,0.1),0_18px_45px_rgba(35,15,55,0.28)]",
+  },
 };
 
 const sceneVariants = {
