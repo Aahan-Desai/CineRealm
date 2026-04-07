@@ -167,7 +167,6 @@ export default function CharacterCard({
         role={character.role}
         seed={character.id || character.name}
         className="h-14 w-14 shrink-0 shadow-md"
-        initialsClassName="text-base"
       />
 
       <div className="flex flex-col w-full gap-1">

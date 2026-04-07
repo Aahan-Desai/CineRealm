@@ -255,7 +255,6 @@ export default function MovieCinematicPlayer({
                             role={block.character?.role}
                             seed={block.character?.id || speakerName}
                             className="mt-0.5 h-9 w-9 shrink-0"
-                            initialsClassName="text-[11px]"
                           />
                           <div className="min-w-0 space-y-2">
                             <p className={`text-[11px] font-black uppercase tracking-[0.28em] ${speakerAccent.name}`}>

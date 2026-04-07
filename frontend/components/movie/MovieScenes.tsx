@@ -279,7 +279,6 @@ export default function MovieScenes({
                                 role={block.character?.role}
                                 seed={block.character?.id || speakerName}
                                 className="mt-0.5 h-8 w-8 shrink-0"
-                                initialsClassName="text-[11px]"
                               />
                               <div className="min-w-0 space-y-2">
                                 <p
