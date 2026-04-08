@@ -25,7 +25,7 @@ app.use(
 )
 app.use(express.json());
 
-app.use("/api", apiLimiter)
+app.use(apiLimiter)
 
 app.use("/auth", authRoutes);
 app.use("/movies", movieRoutes);

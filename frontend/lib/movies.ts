@@ -51,7 +51,7 @@ export const deleteMovie = async (movieId: string) => {
 
 export const getExploreMovies = async () => {
   const data = await apiFetch("/movies/explore");
-  return data.movies;
+  return data?.movies || [];
 };
 
 export const searchMovies = async (query: string) => {
