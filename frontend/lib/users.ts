@@ -21,7 +21,7 @@ export type UserProfileResponse = {
 export const getUserProfile = async (
   username: string
 ): Promise<UserProfileResponse> => {
-  const data = await apiFetch(`/users/${username}`);
+  const data = await apiFetch(`/users/${encodeURIComponent(username)}`);
 
   return {
     user: {

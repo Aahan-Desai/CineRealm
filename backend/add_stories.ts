@@ -35,36 +35,17 @@ const movieUpdates = [
     ]
   },
   {
-    oldSlug: "the-elevator",
-    newSlug: "the-elevator",
-    title: "The Elevator",
-    poster: "/assets/The Elevator.png",
+    oldSlug: "godfather-legacy-of-blood",
+    newSlug: "godfather-legacy-of-blood",
+    title: "The Godfather: Legacy of Blood",
+    poster: "/assets/godfather.png",
     scenes: [
-      { title: "The Snap", actNumber: 1, sceneOrder: 1, scriptText: "A jolt. A silence. The 4th floor button flickers like a dying heart." },
-      { title: "The Mirror Paradox", actNumber: 2, sceneOrder: 2, scriptText: "If I touch the glass, why does the reflection move late?" },
-      { title: "Falling Up", actNumber: 3, sceneOrder: 3, scriptText: "Gravity is a suggestion. The doors open to nowhere." }
-    ]
-  },
-  {
-    oldSlug: "dark-knight-alternate",
-    newSlug: "the-godfather-alternate",
-    title: "The Godfather Alternate Ending",
-    poster: "https://images.unsplash.com/photo-1470219551729-3893a5482e3e?q=80&w=2072&auto=format&fit=crop",
-    scenes: [
-      { title: "The Garden Meeting", actNumber: 1, sceneOrder: 1, scriptText: "Don Vito whispers. Michael listens. This time, the answer is 'No'." },
-      { title: "Shadows in Sicily", actNumber: 2, sceneOrder: 2, scriptText: "A target on his back. A choice in his heart." },
-      { title: "The New Don", actNumber: 3, sceneOrder: 3, scriptText: "The baptism goes on, but the blood stays off his hands." }
-    ]
-  },
-  {
-    oldSlug: "inception-level-two",
-    newSlug: "inception-level-two",
-    title: "Inception: Level Two",
-    poster: "/assets/ffc60d22-6a9d-4a1d-949a-4e29885eb87e.png",
-    scenes: [
-      { title: "The Hallway Twist", actNumber: 1, sceneOrder: 1, scriptText: "The gravity shifts 90 degrees. Cobb runs up the wall." },
-      { title: "Subconscious Guard", actNumber: 2, sceneOrder: 2, scriptText: "They are looking for him. Not the projections, but the dream itself." },
-      { title: "The Infinite Fall", actNumber: 3, sceneOrder: 3, scriptText: "The top spins. It doesn't matter if it stops." }
+      { title: "The Illusion of Legitimacy", actNumber: 1, sceneOrder: 1, scriptText: "Michael meets with powerful financiers and politicians, presenting a vision of a legitimate empire. But beneath the polished surface, subtle tensions reveal that control is slipping in ways he cannot openly acknowledge." },
+      { title: "New Blood", actNumber: 1, sceneOrder: 2, scriptText: "Vincent asserts himself in a violent confrontation, revealing both his capability and his recklessness. Michael sees in him both a successor—and a reflection of everything he fears repeating." },
+      { title: "The Cost of Distance", actNumber: 2, sceneOrder: 3, scriptText: "Michael meets Kay after years apart. Their conversation is restrained but heavy with unspoken truths—about family, power, and what cannot be undone." },
+      { title: "Fracture", actNumber: 2, sceneOrder: 4, scriptText: "Internal betrayal surfaces as factions within the family begin acting independently. The illusion of unity collapses, forcing Michael to respond with the very methods he tried to abandon." },
+      { title: "Inheritance", actNumber: 3, sceneOrder: 5, scriptText: "Michael prepares to pass control, but the realization sets in—there is no clean transfer of power. Only continuation." },
+      { title: "Legacy", actNumber: 3, sceneOrder: 6, scriptText: "In solitude, Michael reflects on the empire he built and the cost it demanded. The world moves on—but the weight remains." }
     ]
   }
 ]
@@ -98,7 +79,7 @@ async function main() {
       })
       console.log(`Updated Movie and Added Stories for: ${item.title}`)
     } catch (err) {
-      console.error(`Failed to update ${item.oldSlug}:`, err.message)
+      console.error(`Failed to update ${item.oldSlug}:`, err instanceof Error ? err.message : err)
     }
   }
   

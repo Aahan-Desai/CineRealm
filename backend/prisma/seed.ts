@@ -511,8 +511,8 @@ async function seedTheElevator({
             content: block.content,
             ...(block.characterKey
               ? {
-                  characterId: characterIdByKey[block.characterKey],
-                }
+                characterId: characterIdByKey[block.characterKey],
+              }
               : {}),
           })),
         },
@@ -523,6 +523,390 @@ async function seedTheElevator({
     })
   }
 }
+
+async function seedGodfatherPartIIIReimagined({
+  creatorId,
+}: {
+  creatorId: string
+}) {
+  const movie = await prisma.movie.create({
+    data: {
+      title: "The Godfather: Legacy of Blood",
+      slug: "godfather-legacy-of-blood",
+      genre: "Crime Drama",
+      runtime: 148,
+      synopsis:
+        "Years after consolidating power, Michael Corleone seeks to legitimize the family’s empire and distance himself from the violence that built it. But as old loyalties fracture and new enemies emerge from within, the line between business and blood begins to blur once again. With Tom Hagen still at his side and a new generation rising, Michael finds himself trapped in a cycle he cannot escape—where every attempt at redemption demands another unforgivable decision. In a world driven by power, memory, and consequence, the Corleone legacy must confront a final truth: the past is never buried—it evolves.",
+      isPublished: true,
+      visibility: "PUBLIC",
+      creatorId,
+      posterUrl: "/assets/godfather.png",
+      backdropUrl:
+        "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=2070&auto=format&fit=crop",
+    },
+  })
+
+  const characters: RichCharacterSeed[] = [
+    {
+      key: "michael",
+      name: "Michael Corleone",
+      actorName: "Al Pacino",
+      role: "Protagonist",
+      traits: "Calculating, Burdened, Controlled",
+      shortBio:
+        "The head of the Corleone family, now seeking legitimacy. Michael is haunted by the cost of his rise, yet remains incapable of relinquishing control.",
+    },
+    {
+      key: "tom",
+      name: "Tom Hagen",
+      actorName: "Robert Duvall",
+      role: "Supporting",
+      traits: "Loyal, Diplomatic, Insightful",
+      shortBio:
+        "The consigliere and Michael’s most trusted advisor. Tom operates as the moral and strategic counterbalance, understanding both the business and the blood beneath it.",
+    },
+    {
+      key: "vincent",
+      name: "Vincent Mancini",
+      actorName: "Andy García",
+      role: "Supporting",
+      traits: "Impulsive, Ambitious, Fierce",
+      shortBio:
+        "The rising force within the family. Vincent represents a new generation—less patient, more volatile, and dangerously eager to prove himself.",
+    },
+    {
+      key: "kay",
+      name: "Kay Adams",
+      actorName: "Diane Keaton",
+      role: "Supporting",
+      traits: "Distant, Observant, Resolute",
+      shortBio:
+        "Michael’s former wife, now an outsider to the empire. Kay sees clearly what Michael refuses to admit—that some legacies cannot be redeemed.",
+    },
+    {
+      key: "connie",
+      name: "Connie Corleone",
+      actorName: "Talia Shire",
+      role: "Supporting",
+      traits: "Protective, Hardened, Loyal",
+      shortBio:
+        "Michael’s sister, now deeply embedded in the family’s operations. Connie has evolved into someone who understands power in ways she once feared.",
+    },
+  ]
+
+  const createdCharacters = await Promise.all(
+    characters.map((character) =>
+      prisma.character.create({
+        data: {
+          movieId: movie.id,
+          name: character.name,
+          actorName: character.actorName,
+          avatarUrl: character.avatarUrl,
+          role: character.role,
+          traits: character.traits,
+          shortBio: character.shortBio,
+        },
+      })
+    )
+  )
+
+  const characterIdByKey = createdCharacters.reduce<Record<string, string>>(
+    (acc, character, index) => {
+      acc[characters[index].key] = character.id
+      return acc
+    },
+    {}
+  )
+
+  const scenes: RichSceneSeed[] = [
+    {
+      title: "The Illusion of Legitimacy",
+      actNumber: 1,
+      sceneOrder: 1,
+      location: "INT. CORLEONE ESTATE - OFFICE - NIGHT",
+      mood: "Calm",
+      scriptText:
+        "Michael meets with powerful financiers and politicians, presenting a vision of a legitimate empire. But beneath the polished surface, subtle tensions reveal that control is slipping in ways he cannot openly acknowledge.",
+      characterKeys: ["michael", "tom"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "Dim light filters through heavy curtains. Papers are signed, drinks are poured, but no one truly relaxes.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "We move forward. Clean. No shadows.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "tom",
+          content:
+            "There are always shadows, Michael. The question is whether they follow you... or wait for you.",
+        },
+      ],
+      choices: [
+        {
+          text: "Push forward with full legitimacy",
+          outcomeText:
+            "The deals proceed, but unseen resistance begins forming within the family.",
+        },
+        {
+          text: "Maintain hidden operations alongside legitimacy",
+          outcomeText:
+            "Michael preserves control—but deepens the very cycle he wants to escape.",
+        },
+      ],
+    },
+    {
+      title: "New Blood",
+      actNumber: 1,
+      sceneOrder: 2,
+      location: "INT. FAMILY COMPOUND - NIGHT",
+      mood: "Tense",
+      scriptText:
+        "Vincent asserts himself in a violent confrontation, revealing both his capability and his recklessness. Michael sees in him both a successor—and a reflection of everything he fears repeating.",
+      characterKeys: ["vincent", "michael", "connie"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "A confrontation escalates quickly. Vincent acts before permission is given, ending it decisively.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "vincent",
+          content:
+            "You hesitate, you lose. That's the world now.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "That was always the world. The difference is knowing when not to act.",
+        },
+      ],
+      choices: [
+        {
+          text: "Rein Vincent in",
+          outcomeText:
+            "Vincent resents the control, creating tension that threatens loyalty.",
+        },
+        {
+          text: "Empower Vincent's rise",
+          outcomeText:
+            "His influence grows—but so does instability within the family.",
+        },
+      ],
+    },
+    {
+      title: "The Cost of Distance",
+      actNumber: 2,
+      sceneOrder: 3,
+      location: "INT. QUIET RESTAURANT - DAY",
+      mood: "Calm",
+      scriptText:
+        "Michael meets Kay after years apart. Their conversation is restrained but heavy with unspoken truths—about family, power, and what cannot be undone.",
+      characterKeys: ["michael", "kay"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "A quiet table. Minimal movement. Every word carries weight.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "kay",
+          content:
+            "You didn't lose your soul, Michael. You traded it.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "Everything I did... was for the family.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "kay",
+          content:
+            "No. It was for control.",
+        },
+      ],
+      choices: [
+        {
+          text: "Admit regret",
+          outcomeText:
+            "For a moment, Michael appears human again—but the moment doesn't last.",
+        },
+        {
+          text: "Defend his choices",
+          outcomeText:
+            "The distance between them becomes permanent.",
+        },
+      ],
+    },
+    {
+      title: "Fracture",
+      actNumber: 2,
+      sceneOrder: 4,
+      location: "INT. BACKROOM MEETING - NIGHT",
+      mood: "Chaos",
+      scriptText:
+        "Internal betrayal surfaces as factions within the family begin acting independently. The illusion of unity collapses, forcing Michael to respond with the very methods he tried to abandon.",
+      characterKeys: ["michael", "tom", "vincent"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "Voices rise. Accusations fly. The room fractures into opposing sides.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "tom",
+          content:
+            "You tried to change the rules. The game didn't.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "Then we remind them who writes the rules.",
+        },
+      ],
+      choices: [
+        {
+          text: "Use force to restore order",
+          outcomeText:
+            "Control returns—but at the cost of further bloodshed.",
+        },
+        {
+          text: "Attempt negotiation",
+          outcomeText:
+            "The fractures deepen, revealing loyalty cannot be restored.",
+        },
+      ],
+    },
+    {
+      title: "Inheritance",
+      actNumber: 3,
+      sceneOrder: 5,
+      location: "INT. CORLEONE ESTATE - STUDY - NIGHT",
+      mood: "Tense",
+      scriptText:
+        "Michael prepares to pass control, but the realization sets in—there is no clean transfer of power. Only continuation.",
+      characterKeys: ["michael", "vincent", "tom"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "Michael sits alone before Vincent enters. The silence is heavy with inevitability.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "Power doesn't end. It changes hands.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "vincent",
+          content:
+            "Then let me take it.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "tom",
+          content:
+            "Be careful what you inherit. Some things don't belong to anyone.",
+        },
+      ],
+      choices: [
+        {
+          text: "Give Vincent full control",
+          outcomeText:
+            "The next era begins—more volatile than the last.",
+        },
+        {
+          text: "Hold onto power longer",
+          outcomeText:
+            "Michael delays the inevitable—but at growing cost.",
+        },
+      ],
+    },
+    {
+      title: "Legacy",
+      actNumber: 3,
+      sceneOrder: 6,
+      location: "EXT. SICILIAN COUNTRYSIDE - DUSK",
+      mood: "Calm",
+      scriptText:
+        "In solitude, Michael reflects on the empire he built and the cost it demanded. The world moves on—but the weight remains.",
+      characterKeys: ["michael"],
+      blocks: [
+        {
+          type: "ACTION",
+          content:
+            "Michael sits alone, watching the horizon as the light fades slowly into darkness.",
+        },
+        {
+          type: "DIALOGUE",
+          characterKey: "michael",
+          content:
+            "In the end... it was never about power. It was about what it took to keep it.",
+        },
+      ],
+      choices: [
+        {
+          text: "End with quiet acceptance",
+          outcomeText:
+            "Michael remains alone, a man who had everything—and lost it in the process.",
+        },
+        {
+          text: "End with unresolved legacy",
+          outcomeText:
+            "The cycle continues, carried forward by those who follow.",
+        },
+      ],
+    },
+  ]
+
+  for (const scene of scenes) {
+    await prisma.scene.create({
+      data: {
+        movieId: movie.id,
+        title: scene.title,
+        actNumber: scene.actNumber,
+        sceneOrder: scene.sceneOrder,
+        location: scene.location,
+        mood: scene.mood,
+        scriptText: scene.scriptText,
+        characters: {
+          create: scene.characterKeys.map((characterKey) => ({
+            characterId: characterIdByKey[characterKey],
+          })),
+        },
+        blocks: {
+          create: scene.blocks.map((block) => ({
+            type: block.type,
+            content: block.content,
+            ...(block.characterKey
+              ? {
+                characterId: characterIdByKey[block.characterKey],
+              }
+              : {}),
+          })),
+        },
+        choices: {
+          create: scene.choices,
+        },
+      },
+    })
+  }
+}
+
 
 async function seedTheLastOrbit({
   creatorId,
@@ -907,8 +1291,8 @@ async function seedTheLastOrbit({
             content: block.content,
             ...(block.characterKey
               ? {
-                  characterId: characterIdByKey[block.characterKey],
-                }
+                characterId: characterIdByKey[block.characterKey],
+              }
               : {}),
           })),
         },
@@ -1337,8 +1721,8 @@ async function seedMidnightCafe({
             content: block.content,
             ...(block.characterKey
               ? {
-                  characterId: characterIdByKey[block.characterKey],
-                }
+                characterId: characterIdByKey[block.characterKey],
+              }
               : {}),
           })),
         },
@@ -1740,8 +2124,8 @@ async function seedTheEclipseProtocol({
             content: block.content,
             ...(block.characterKey
               ? {
-                  characterId: characterIdByKey[block.characterKey],
-                }
+                characterId: characterIdByKey[block.characterKey],
+              }
               : {}),
           })),
         },
@@ -1791,44 +2175,8 @@ async function main() {
   await seedTheLastOrbit({ creatorId: user1.id })
   await seedMidnightCafe({ creatorId: user2.id })
   await seedTheEclipseProtocol({ creatorId: user1.id })
+  await seedGodfatherPartIIIReimagined({ creatorId: user1.id })
 
-  await prisma.movie.create({
-    data: {
-      title: "Inception: Level Two",
-      slug: "inception-level-two",
-      synopsis:
-        "Cobb returns to dream infiltration, but this time the dream fights back.",
-      isPublished: true,
-      visibility: "PUBLIC",
-      creatorId: user1.id,
-      posterUrl: "/assets/ffc60d22-6a9d-4a1d-949a-4e29885eb87e.png",
-      backdropUrl:
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
-      scenes: {
-        create: [
-          {
-            title: "The Hallway Twist",
-            actNumber: 1,
-            sceneOrder: 1,
-            scriptText: "The gravity shifts 90 degrees. Cobb runs up the wall.",
-          },
-          {
-            title: "Subconscious Guard",
-            actNumber: 2,
-            sceneOrder: 2,
-            scriptText:
-              "They are looking for him. Not the projections, but the dream itself.",
-          },
-          {
-            title: "The Infinite Fall",
-            actNumber: 3,
-            sceneOrder: 3,
-            scriptText: "The top spins. It doesn't matter if it stops.",
-          },
-        ],
-      },
-    },
-  })
 
 
   console.log("Seed data created")

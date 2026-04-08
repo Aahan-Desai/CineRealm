@@ -1,0 +1,17 @@
+{
+  "name": "cinerealm-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "next-app"
+  ],
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "prisma": "^6.19.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}
