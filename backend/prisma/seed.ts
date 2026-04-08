@@ -1366,7 +1366,7 @@ async function seedTheEclipseProtocol({
       isPublished: true,
       visibility: "PUBLIC",
       creatorId,
-      posterUrl: "/assets/The Eclipse Protocol.png",
+      posterUrl: "/assets/Eclipse Protocol.png",
       backdropUrl:
         "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
     },

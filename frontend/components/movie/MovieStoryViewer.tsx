@@ -5,6 +5,7 @@ import MovieActs from "./MovieActs";
 import MovieCinematicPlayer from "./MovieCinematicPlayer";
 import { Scene } from "@/types/scene";
 import { getMovieProgress, saveMovieProgress } from "@/lib/movies";
+import { useAuthStore } from "@/store/authStore";
 
 export type StoryViewMode = "standard" | "cinematic";
 
@@ -15,6 +16,7 @@ export default function MovieStoryViewer({
   movieId: string;
   scenes: Scene[];
 }) {
+  const { token } = useAuthStore();
   const [viewMode, setViewMode] = useState<StoryViewMode>("standard");
   const [progressiveReveal, setProgressiveReveal] = useState(false);
   const [maxUnlockedAct, setMaxUnlockedAct] = useState(1);
@@ -92,6 +94,14 @@ export default function MovieStoryViewer({
     let cancelled = false;
 
     async function loadProgress() {
+      if (!token) {
+        if (orderedScenes[0]) {
+          setActiveSceneId(orderedScenes[0].id);
+        }
+        setResumeLoaded(true);
+        return;
+      }
+
       try {
         const progress = await getMovieProgress(movieId);
         if (cancelled) return;
@@ -126,7 +136,7 @@ export default function MovieStoryViewer({
     return () => {
       cancelled = true;
     };
-  }, [movieId, orderedScenes, sceneLookup]);
+  }, [movieId, orderedScenes, sceneLookup, token]);
 
   useEffect(() => {
     if (!resumeLoaded || !activeSceneId) return;
@@ -137,6 +147,7 @@ export default function MovieStoryViewer({
     }
 
     saveTimeoutRef.current = window.setTimeout(async () => {
+      if (!token) return;
       try {
         await saveMovieProgress(movieId, activeSceneId);
         lastSavedSceneIdRef.current = activeSceneId;
@@ -167,7 +178,7 @@ export default function MovieStoryViewer({
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-6 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 md:p-8">
+      <div className="flex flex-col gap-6 rounded-[32px] border border-white/10 bg-white/0.03 p-6 md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
             <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/70">
