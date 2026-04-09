@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import { getSuggestions } from "@/lib/api";
 import { followUser } from "@/lib/follow";
 
+const getInitials = (username?: string) =>
+  username
+    ?.split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "U";
+
 export default function Suggestions() {
   const [users, setUsers] = useState<any[]>([]);
 
@@ -25,11 +33,17 @@ export default function Suggestions() {
           >
             <div className="flex items-center gap-3">
               <div className="relative">
-                <img
-                  src={user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`}
-                  className="w-9 h-9 rounded-full border border-white/10 group-hover:border-primary/50 transition-colors"
-                  alt={user.username}
-                />
+                <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/5 text-[11px] font-bold tracking-wide text-foreground group-hover:border-primary/50 transition-colors">
+                  {user.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      className="h-full w-full object-cover"
+                      alt={user.username}
+                    />
+                  ) : (
+                    <span>{getInitials(user.username)}</span>
+                  )}
+                </div>
                 <div className="absolute inset-0 rounded-full shadow-inner shadow-white/10" />
               </div>
               <div className="min-w-0">

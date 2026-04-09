@@ -34,6 +34,12 @@ export default function MovieHeroBanner({
   const userRating = ratings.find(
     (r) => r.user?.username === user?.username
   )?.rating;
+  const creatorInitials = movie.creator?.username
+    ?.split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "U";
 
   return (
     <div className="relative w-full h-[95svh] min-h-[750px] overflow-hidden">
@@ -121,11 +127,17 @@ export default function MovieHeroBanner({
                   href={`/profile/${movie.creator.username}`}
                   className="group flex items-center gap-4 bg-white/5 backdrop-blur-2xl rounded-[32px] p-2 pr-8 border border-white/10 hover:bg-white/10 transition-all"
                 >
-                  <img 
-                    src={movie.creator.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${movie.creator.username}`}
-                    className="w-12 h-12 rounded-full border border-white/10"
-                    alt={movie.creator.username}
-                  />
+                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/5 text-sm font-black tracking-[0.18em] text-white">
+                    {movie.creator.avatarUrl ? (
+                      <img
+                        src={movie.creator.avatarUrl}
+                        className="h-full w-full object-cover"
+                        alt={movie.creator.username}
+                      />
+                    ) : (
+                      <span>{creatorInitials}</span>
+                    )}
+                  </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Director</span>
                     <span className="text-sm font-bold text-white group-hover:text-primary transition-colors">@{movie.creator.username}</span>

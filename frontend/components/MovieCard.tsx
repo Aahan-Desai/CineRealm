@@ -42,6 +42,12 @@ export default function MovieCard({ movie }: { movie: Movie }) {
 
   const creatorUsername = movie.creator?.username || "unknown";
   const creatorAvatarUrl = movie.creator?.avatarUrl;
+  const creatorInitials = creatorUsername
+    .split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "U";
 
   return (
     <motion.div 
@@ -97,9 +103,9 @@ export default function MovieCard({ movie }: { movie: Movie }) {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <span className="text-[10px] font-bold text-foreground">
-                        {creatorUsername[0]?.toUpperCase()}
+                    <div className="flex h-full w-full items-center justify-center bg-white/5">
+                      <span className="text-[10px] font-bold tracking-wide text-foreground">
+                        {creatorInitials}
                       </span>
                     </div>
                   )}
